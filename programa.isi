@@ -19,10 +19,11 @@ programa
   
   d := c * (a + b).
   
-  escreva (“D e igual a ”).
+  escreva ("D e igual a ").
   escreva (d).
   
   enquanto (a < b){
+  	 leia (a).
      escreva(a).
      escreva("TESTE texto 45 ").
   }
