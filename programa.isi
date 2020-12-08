@@ -1,5 +1,5 @@
 programa
-  declare numero a,b,c,d.
+  declare numero a,b,c,d, f.
   declare texto t1 .
   
   escreva("Programa Teste").
