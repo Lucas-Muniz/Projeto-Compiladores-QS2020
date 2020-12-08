@@ -1,16 +1,16 @@
 grammar IsiLang;
 
 @header{
-	import br.com.professorisidro.isilanguage.datastructures.IsiSymbol;
-	import br.com.professorisidro.isilanguage.datastructures.IsiVariable;
-	import br.com.professorisidro.isilanguage.datastructures.IsiSymbolTable;
-	import br.com.professorisidro.isilanguage.exceptions.IsiSemanticException;
-	import br.com.professorisidro.isilanguage.ast.IsiProgram;
-	import br.com.professorisidro.isilanguage.ast.AbstractCommand;
-	import br.com.professorisidro.isilanguage.ast.CommandLeitura;
-	import br.com.professorisidro.isilanguage.ast.CommandEscrita;
-	import br.com.professorisidro.isilanguage.ast.CommandAtribuicao;
-	import br.com.professorisidro.isilanguage.ast.CommandDecisao;
+	import isilanguage.datastructures.IsiSymbol;
+	import isilanguage.datastructures.IsiVariable;
+	import isilanguage.datastructures.IsiSymbolTable;
+	import isilanguage.exceptions.IsiSemanticException;
+	import isilanguage.ast.IsiProgram;
+	import isilanguage.ast.AbstractCommand;
+	import isilanguage.ast.CommandLeitura;
+	import isilanguage.ast.CommandEscrita;
+	import isilanguage.ast.CommandAtribuicao;
+	import isilanguage.ast.CommandDecisao;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
@@ -179,9 +179,10 @@ cmdselecao  :  'se' AP
             ;
             
 cmdrepeticao : 'enquanto' AP
-                          ID
+                          ID { verificaID(_input.LT(-1).getText()); }
                           OPREL
-                          (ID | NUMBER)
+                          (ID { verificaID(_input.LT(-1).getText()); }
+                          | NUMBER)
                           FP
                           ACH
                           (cmd)+

@@ -22,4 +22,9 @@ programa
   escreva (“D e igual a ”).
   escreva (d).
   
+  enquanto (a < b){
+     escreva(a).
+     escreva("TESTE texto 45 ").
+  }
+  
 fimprog.
