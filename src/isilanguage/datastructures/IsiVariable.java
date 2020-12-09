@@ -7,11 +7,15 @@ public class IsiVariable extends IsiSymbol {
 	
 	private int type;
 	private String value;
+	private boolean isUsed;
+	private boolean isAttributed;
 	
 	public IsiVariable(String name, int type, String value) {
 		super(name);
 		this.type = type;
 		this.value = value;
+		this.isUsed = false;
+		this.isAttributed = false;
 	}
 
 	public int getType() {
@@ -28,6 +32,22 @@ public class IsiVariable extends IsiSymbol {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+	public void initializeVariable() {
+		this.isAttributed = true;
+	}
+	
+	public void useVariable() {
+		this.isUsed = true;
+	}
+	
+	public boolean wasUsed() {
+		return this.isUsed;
+	}
+	
+	public boolean wasAttributed() {
+		return this.isAttributed;
 	}
 
 	@Override

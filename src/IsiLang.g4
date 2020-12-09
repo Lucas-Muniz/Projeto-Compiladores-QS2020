@@ -27,6 +27,7 @@ grammar IsiLang;
 	private Stack<ArrayList<AbstractCommand>> stack = new Stack<ArrayList<AbstractCommand>>();
 	private String _readID;
 	private String _writeID;
+	private String _attribID;
 	private String _exprID;
 	private String _exprContent;
 	private String _exprDecision;
@@ -37,6 +38,44 @@ grammar IsiLang;
 	public void verificaID(String id){
 		if (!symbolTable.exists(id)){
 			throw new IsiSemanticException("Symbol "+id+" not declared");
+		}
+	}
+	
+	public void atribuiVariavel(String id){
+		if (!symbolTable.exists(id)){
+			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiSymbol var = symbolTable.get(id);
+			if (var instanceof IsiVariable){
+				((IsiVariable) var).initializeVariable();
+				symbolTable.add(var);
+			} 
+			
+		}
+	}
+	
+	public void useVariavel(String id){
+		if (!symbolTable.exists(id)){
+			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiSymbol var = symbolTable.get(id);
+			if (var instanceof IsiVariable){
+				((IsiVariable) var).useVariable();
+				symbolTable.add(var);
+			} 
+			
+		}
+	}
+	
+	public void verificaAtribuicao(String id){
+		if (!symbolTable.exists(id)){
+			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiSymbol var = symbolTable.get(id);
+			if (var instanceof IsiVariable && !((IsiVariable) var).wasAttributed()){
+				throw new IsiSemanticException("Symbol "+id+" is used but not declared");
+			} 
+			
 		}
 	}
 	
@@ -54,7 +93,7 @@ grammar IsiLang;
 prog	: 'programa' decl bloco  'fimprog.'
            {  program.setVarTable(symbolTable);
            	  program.setComandos(stack.pop());
-           	 
+           	  symbolTable.verifyVariables();
            } 
 		;
 		
@@ -110,6 +149,7 @@ cmd		:  cmdleitura
 cmdleitura	: 'leia' AP
                      ID { verificaID(_input.LT(-1).getText());
                      	  _readID = _input.LT(-1).getText();
+                     	  atribuiVariavel(_readID);
                         } 
                      FP 
                      POINT 
@@ -125,7 +165,8 @@ cmdescrita	: 'escreva'
                  AP 
                  ( TEXTO {_writeID = _input.LT(-1).getText();}
                  | ID { verificaID(_input.LT(-1).getText());
-	                  _writeID = _input.LT(-1).getText();
+	                    _writeID = _input.LT(-1).getText();
+	                    useVariavel(_writeID);
                        }
                   ) 
                  FP 
@@ -144,15 +185,18 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                POINT
                {
                	 CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
+               	 atribuiVariavel(_exprID);
                	 stack.peek().add(cmd);
                }
 			;
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { _exprDecision = _input.LT(-1).getText(); }
+                    ID    { _exprDecision = _input.LT(-1).getText();
+                            useVariavel(_input.LT(-1).getText()); }
                     OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    (ID | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    (ID   { useVariavel(_input.LT(-1).getText());}
+                    | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     FP 
                     'entao'
                     ACH 
@@ -181,9 +225,11 @@ cmdselecao  :  'se' AP
             ;
             
 cmdrepeticao : 'enquanto' AP
-                   		  ID    { _exprDecision = _input.LT(-1).getText(); }
+                   		  ID    { _exprDecision = _input.LT(-1).getText();
+                   		          useVariavel(_input.LT(-1).getText()); }
                     	  OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    	  (ID | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    	  (ID   { useVariavel(_input.LT(-1).getText());}
+                    	  | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -208,6 +254,9 @@ expr		:  termo (
 			
 termo		: ID { verificaID(_input.LT(-1).getText());
 	               _exprContent += _input.LT(-1).getText();
+	               useVariavel(_input.LT(-1).getText());
+	               /* Verifica se uma variável usada foi atribuída */
+	               verificaAtribuicao(_input.LT(-1).getText());
                  } 
             | 
               NUMBER

@@ -6,13 +6,19 @@ double  a;
 double  b;
 double  c;
 double  d;
+double  e;
 double  f;
+double  g;
 String  t1;
 System.out.println("Programa Teste");
 System.out.println("Digite A");
 a= _key.nextDouble();
 System.out.println("Digite B");
 b= _key.nextDouble();
+t1= _key.nextLine();
+e= _key.nextDouble();
+f = 0.5;
+f = f+10;
 if (a>b) {
 c = a+b;
 }else {
@@ -27,6 +33,7 @@ System.out.println(d);
 while (a<b) {
 a= _key.nextDouble();
 System.out.println(a);
-System.out.println("TESTE texto 45 ");
+System.out.println("TESTE 1");
+a = a+1;
 }
   }}

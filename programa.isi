@@ -1,12 +1,17 @@
 programa
-  declare numero a,b,c,d, f.
-  declare texto t1 .
+  declare numero a,b,c,d, e, f, g.
+  declare texto t1.
   
   escreva("Programa Teste").
   escreva ("Digite A").
   leia (a).
   escreva ("Digite B").
   leia (b).
+  
+  leia (t1).
+  leia(e).
+  f := 0.5.
+  f := f + 10.
   
   se (a>b) entao {
     c := a + b.
@@ -25,7 +30,8 @@ programa
   enquanto (a < b){
   	 leia (a).
      escreva(a).
-     escreva("TESTE texto 45 ").
+     escreva("TESTE 1").
+     a := a + 1.
   }
   
 fimprog.

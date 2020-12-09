@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import isilanguage.exceptions.IsiSemanticException;
+
 public class IsiSymbolTable {
 	
 	private HashMap<String, IsiSymbol> map;
@@ -33,6 +35,20 @@ public class IsiSymbolTable {
 		return lista;
 	}
 
-	
+	public void verifyVariables() {
+		for (IsiSymbol symbol: this.getAll()) {
+			if (symbol instanceof IsiVariable) {
+				boolean isUsed = ((IsiVariable) symbol).wasUsed();
+				boolean isAttributed = ((IsiVariable) symbol).wasAttributed();
+				if (isUsed && !isAttributed) {
+					throw new IsiSemanticException("WARNING: Symbol "+symbol.getName()+" is used but not attributed");
+				} else if (isAttributed && !isUsed) {
+					System.out.println("WARNING: Variable "+symbol.getName()+" is attributed but not used.");
+				}else if (!isAttributed && !isUsed) {
+					System.out.println("WARNING: Variable "+symbol.getName()+" is not attributed and not used.");
+				}
+			}
+		}
+	}
 	
 }

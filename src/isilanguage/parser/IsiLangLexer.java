@@ -103,6 +103,7 @@ public class IsiLangLexer extends Lexer {
 		private Stack<ArrayList<AbstractCommand>> stack = new Stack<ArrayList<AbstractCommand>>();
 		private String _readID;
 		private String _writeID;
+		private String _attribID;
 		private String _exprID;
 		private String _exprContent;
 		private String _exprDecision;
@@ -113,6 +114,44 @@ public class IsiLangLexer extends Lexer {
 		public void verificaID(String id){
 			if (!symbolTable.exists(id)){
 				throw new IsiSemanticException("Symbol "+id+" not declared");
+			}
+		}
+		
+		public void atribuiVariavel(String id){
+			if (!symbolTable.exists(id)){
+				throw new IsiSemanticException("Symbol "+id+" not declared");
+			} else {
+				IsiSymbol var = symbolTable.get(id);
+				if (var instanceof IsiVariable){
+					((IsiVariable) var).initializeVariable();
+					symbolTable.add(var);
+				} 
+				
+			}
+		}
+		
+		public void useVariavel(String id){
+			if (!symbolTable.exists(id)){
+				throw new IsiSemanticException("Symbol "+id+" not declared");
+			} else {
+				IsiSymbol var = symbolTable.get(id);
+				if (var instanceof IsiVariable){
+					((IsiVariable) var).useVariable();
+					symbolTable.add(var);
+				} 
+				
+			}
+		}
+		
+		public void verificaAtribuicao(String id){
+			if (!symbolTable.exists(id)){
+				throw new IsiSemanticException("Symbol "+id+" not declared");
+			} else {
+				IsiSymbol var = symbolTable.get(id);
+				if (var instanceof IsiVariable && !((IsiVariable) var).wasAttributed()){
+					throw new IsiSemanticException("Symbol "+id+" is used but not declared");
+				} 
+				
 			}
 		}
 		
