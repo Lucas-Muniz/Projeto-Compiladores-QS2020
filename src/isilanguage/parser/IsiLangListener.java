@@ -11,7 +11,8 @@ package isilanguage.parser;
 	import isilanguage.ast.CommandEscrita;
 	import isilanguage.ast.CommandAtribuicao;
 	import isilanguage.ast.CommandDecisao;
-	import isilanguage.ast.CommandRepeticao;
+	import isilanguage.ast.CommandEnquanto;
+	import isilanguage.ast.CommandFaca;
 	import java.util.ArrayList;
 	import java.util.Stack;
 

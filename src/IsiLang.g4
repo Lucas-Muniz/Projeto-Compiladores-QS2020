@@ -11,7 +11,8 @@ grammar IsiLang;
 	import isilanguage.ast.CommandEscrita;
 	import isilanguage.ast.CommandAtribuicao;
 	import isilanguage.ast.CommandDecisao;
-	import isilanguage.ast.CommandRepeticao;
+	import isilanguage.ast.CommandEnquanto;
+	import isilanguage.ast.CommandFaca;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
@@ -238,13 +239,36 @@ cmdrepeticao : 'enquanto' AP
                           (cmd)+
                           FCH
                           {
-                        	listaTrue = stack.pop();	
+                        	commands = stack.pop();	
                     	  }
                     	  {
-                   			CommandRepeticao cmd = new CommandRepeticao(_exprDecision, listaTrue);
+                   			CommandEnquanto cmd = new CommandEnquanto(_exprDecision, commands);
                    			stack.peek().add(cmd);
-                   	}
-             ; 
+                   		  }
+             	|
+             	
+             	'faca' 	  ACH
+                       	  { curThread = new ArrayList<AbstractCommand>(); 
+                       	 	stack.push(curThread);
+                   	   	  }
+                       	  (cmd)+
+                       	  FCH
+                       	  {
+                         	commands = stack.pop();	
+                       	  } 
+                'enquanto' AP
+                   		   ID    { _exprDecision = _input.LT(-1).getText();
+                   		          useVariavel(_input.LT(-1).getText()); }
+                    	   OPREL { _exprDecision += _input.LT(-1).getText(); }
+                    	   (ID   { useVariavel(_input.LT(-1).getText());}
+                    	   | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    	   FP
+                    	   POINT
+                       {
+                   	   	  CommandFaca cmd = new CommandFaca(_exprDecision, commands);
+                   		  stack.peek().add(cmd);
+                   	   }
+             	;
 			
 expr		:  termo ( 
 	             OP  { _exprContent += _input.LT(-1).getText();}

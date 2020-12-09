@@ -1,6 +1,5 @@
 programa
-  declare numero a,b,c,d, e, f, g.
-  declare texto t1.
+  declare numero a,b,c,d.
   
   escreva("Programa Teste").
   escreva ("Digite A").
@@ -8,16 +7,16 @@ programa
   escreva ("Digite B").
   leia (b).
   
-  leia (t1).
-  leia(e).
-  f := 0.5.
-  f := (f + 10)/2.
-  
   se (a>b) entao {
     c := a + b.
   } senao {
     c := (a - b).
   }
+  
+  faca {
+  	leia (a).
+  	escreva (a).
+  } enquanto (a != 0).
   
   escreva ("C e igual a ").
   escreva (c).
