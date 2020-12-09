@@ -24,7 +24,7 @@ public class CommandEnquanto extends AbstractCommand {
 	}
 	
 	public String toString() {
-		return "CommandRepeticao [condition=" + condition + ", commands=" + commands + "]";
+		return "CommandEnquanto [condition=" + condition + ", commands=" + commands + "]";
 	}
 
 }
