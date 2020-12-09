@@ -1,5 +1,6 @@
 programa
-  declare numero a,b,c,d.
+  declare numero a,b,c,d, f.
+  declare texto t.
   
   escreva("Programa Teste").
   escreva ("Digite A").
@@ -10,8 +11,15 @@ programa
   se (a>b) entao {
     c := a + b.
   } senao {
-    c := (a - b).
+    c := (a - b)/(2 + 5.6).
   }
+  
+  leia(t).
+  t := "hello" + " " + ("world"). 
+  f := (a + c)/(2 + 5.6).
+  f := -10.525 / (+10) .
+  f := 10 -10 + -1.
+  f := -10.05.
   
   faca {
   	leia (a).

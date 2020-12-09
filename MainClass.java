@@ -6,6 +6,8 @@ double  a;
 double  b;
 double  c;
 double  d;
+String  t;
+double  f;
 System.out.println("Programa Teste");
 System.out.println("Digite A");
 a= _key.nextDouble();
@@ -14,9 +16,15 @@ b= _key.nextDouble();
 if (a>b) {
     c = a+b;
 } else {
-    c = (a-b);
+    c = (a-b)/(2+5.6);
 }
 
+t= _key.nextLine();
+t = "hello"+" "+("world");
+f = (a+c)/(2+5.6);
+f = -10.525/(+10);
+f = 10-10+-1;
+f = -10.05;
 do {
     a= _key.nextDouble();
     System.out.println(a);

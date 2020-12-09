@@ -1,9 +1,9 @@
 package isilanguage.datastructures;
 
-public class IsiVariable extends IsiSymbol {
+public class IsiVariable extends IsiSymbol implements IsiTypes{
 	
-	public static final int NUMBER=0;
-	public static final int TEXT  =1;
+	//public static final int NUMBER=0;
+	//public static final int TEXT  =1;
 	
 	private int type;
 	private String value;

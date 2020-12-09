@@ -4,6 +4,9 @@ grammar IsiLang;
 	import isilanguage.datastructures.IsiSymbol;
 	import isilanguage.datastructures.IsiVariable;
 	import isilanguage.datastructures.IsiSymbolTable;
+	import isilanguage.datastructures.IsiTerm;
+	import isilanguage.datastructures.IsiTypes;
+	import isilanguage.datastructures.IsiOperator;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -29,6 +32,10 @@ grammar IsiLang;
 	private String _readID;
 	private String _writeID;
 	private String _attribID;
+	private String _attribTerm;
+	private IsiTerm _term = null; 
+	private IsiTerm _newTerm = null;
+	private String op, sign;
 	private String _exprID;
 	private String _exprContent;
 	private String _exprDecision;
@@ -75,6 +82,41 @@ grammar IsiLang;
 			IsiSymbol var = symbolTable.get(id);
 			if (var instanceof IsiVariable && !((IsiVariable) var).wasAttributed()){
 				throw new IsiSemanticException("Symbol "+id+" is used but not declared");
+			} 
+			
+		}
+	}
+	
+	public int obtemTipoId(String id){
+		if (!symbolTable.exists(id)){
+			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiSymbol var = symbolTable.get(id);
+			if (var instanceof IsiVariable){
+				return ((IsiVariable) var).getType();
+			} 
+			return -1;
+			
+		}
+	}
+	
+	public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
+		 /* Verificação de tipo*/
+	     if (_term == null){
+	     	return  new IsiTerm(termo, tipo);
+	     } else {
+	        IsiTerm newTerm = new IsiTerm(termo, tipo);
+	        return _term.checkTypeExpression(op, newTerm);
+	     }
+	}
+	
+	public void verificaTipoAtribuicao(String id, IsiTerm term){
+		if (!symbolTable.exists(id)){
+			throw new IsiSemanticException("Symbol "+id+" not declared");
+		} else {
+			IsiSymbol var = symbolTable.get(id);
+			if (var instanceof IsiVariable){
+				IsiTerm.checkAttributionType((IsiVariable) var, term);
 			} 
 			
 		}
@@ -188,6 +230,8 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                	 CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
                	 atribuiVariavel(_exprID);
                	 stack.peek().add(cmd);
+               	 verificaTipoAtribuicao(_exprID, _term);
+               	 _term = null;
                }
 			;
 			
@@ -197,7 +241,8 @@ cmdselecao  :  'se' AP
                             useVariavel(_input.LT(-1).getText()); }
                     OPREL { _exprDecision += _input.LT(-1).getText(); }
                     (ID   { useVariavel(_input.LT(-1).getText());}
-                    | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    | NUMBER 
+                    | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     FP 
                     'entao'
                     ACH 
@@ -230,7 +275,8 @@ cmdrepeticao : 'enquanto' AP
                    		          useVariavel(_input.LT(-1).getText()); }
                     	  OPREL { _exprDecision += _input.LT(-1).getText(); }
                     	  (ID   { useVariavel(_input.LT(-1).getText());}
-                    	  | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    	  | NUMBER
+                    	  | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -261,7 +307,8 @@ cmdrepeticao : 'enquanto' AP
                    		          useVariavel(_input.LT(-1).getText()); }
                     	   OPREL { _exprDecision += _input.LT(-1).getText(); }
                     	   (ID   { useVariavel(_input.LT(-1).getText());}
-                    	   | NUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    	   | NUMBER
+                    	   | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
                     	   FP
                     	   POINT
                        {
@@ -270,23 +317,61 @@ cmdrepeticao : 'enquanto' AP
                    	   }
              	;
 			
-expr		:  termo ( 
-	             OP  { _exprContent += _input.LT(-1).getText();}
-	            termo
-	            )*
+expr		:  (termo
+                
+               | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	                _exprContent += _attribTerm;
+              	       
+              	                 /* Verificação de tipo*/
+	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+                               }) 
+                               
+               ( (OP  { op = _input.LT(-1).getText();
+	                    _exprContent += op;}
+	           termo)
+	            
+	           | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	             _exprContent += _attribTerm;
+              	       
+              	              /* Verificação de tipo*/
+	               	          _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+                            }
+	           )*
 			;
 			
-termo		: ID { verificaID(_input.LT(-1).getText());
-	               _exprContent += _input.LT(-1).getText();
-	               useVariavel(_input.LT(-1).getText());
+termo		: ID { _attribTerm = _input.LT(-1).getText();
+                   verificaID(_attribTerm);
+	               _exprContent += _attribTerm;
+	               useVariavel(_attribTerm);
 	               /* Verifica se uma variável usada foi atribuída */
-	               verificaAtribuicao(_input.LT(-1).getText());
+	               verificaAtribuicao(_attribTerm);
+	               
+	               /* Verificação de tipo*/
+	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	               
                  } 
             | 
-              NUMBER
-              {
-              	_exprContent += _input.LT(-1).getText();
-              }
+              NUMBER { _attribTerm = _input.LT(-1).getText();
+              	       _exprContent += _attribTerm;
+              	       
+              	       /* Verificação de tipo*/
+	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+                      }
+            | 
+              SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	             _exprContent += _attribTerm;
+              	       
+              	             /* Verificação de tipo*/
+	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+                            }
+               
+            | 
+              TEXTO { _attribTerm = _input.LT(-1).getText();
+              	      _exprContent += _attribTerm;
+              	       
+              	      /* Verificação de tipo*/
+	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
+                    }
             | '(' {_exprContent += _input.LT(-1).getText(); } 
                 expr 
                ')' { _exprContent += _input.LT(-1).getText(); }
@@ -329,6 +414,12 @@ ID	: [a-z] ([a-z] | [A-Z] | [0-9])*
 	
 NUMBER	: [0-9]+ ('.' [0-9]+)?
 		;
+		
+SIGNEDNUMBER : ('+' | '-') [0-9]+ ('.' [0-9]+)?
+             ;
+		
+SIGN  : ('+' | '-')
+      ;
 		
 TEXTO : ('"' | '“') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( '”' | '"')
       ;
