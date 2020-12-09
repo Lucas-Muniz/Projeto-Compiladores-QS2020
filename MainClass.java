@@ -18,16 +18,16 @@ b= _key.nextDouble();
 t1= _key.nextLine();
 e= _key.nextDouble();
 f = 0.5;
-f = f+10;
+f = (f+10)/2;
 if (a>b) {
 c = a+b;
 }else {
-c = a-b;
+c = (a-b);
 }
 
 System.out.println("C e igual a ");
 System.out.println(c);
-d = c*a+b;
+d = c*(a+b);
 System.out.println("D e igual a ");
 System.out.println(d);
 while (a<b) {

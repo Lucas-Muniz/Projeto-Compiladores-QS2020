@@ -11,7 +11,7 @@ programa
   leia (t1).
   leia(e).
   f := 0.5.
-  f := f + 10.
+  f := (f + 10)/2.
   
   se (a>b) entao {
     c := a + b.

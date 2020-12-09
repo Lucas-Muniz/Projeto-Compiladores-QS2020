@@ -263,7 +263,9 @@ termo		: ID { verificaID(_input.LT(-1).getText());
               {
               	_exprContent += _input.LT(-1).getText();
               }
-            | '(' expr ')'
+            | '(' {_exprContent += _input.LT(-1).getText(); } 
+                expr 
+               ')' { _exprContent += _input.LT(-1).getText(); }
 			;
 			
 	
