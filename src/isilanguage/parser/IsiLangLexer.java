@@ -114,6 +114,7 @@ public class IsiLangLexer extends Lexer {
 		private IsiTerm _term = null; 
 		private IsiTerm _newTerm = null;
 		private String op, sign;
+		private int type;
 		private String _exprID;
 		private String _exprContent;
 		private String _exprDecision;

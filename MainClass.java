@@ -24,7 +24,14 @@ t = "hello"+" "+("world");
 f = (a+c)/(2+5.6);
 f = -10.525/(+10);
 f = 10-10+-1;
-f = -10.05;
+f = -10.05-+10;
+f = a+b;
+if (a==b) {
+    t = "igual";
+} else {
+    t = "diferente";
+}
+
 do {
     a= _key.nextDouble();
     System.out.println(a);

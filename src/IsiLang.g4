@@ -36,6 +36,7 @@ grammar IsiLang;
 	private IsiTerm _term = null; 
 	private IsiTerm _newTerm = null;
 	private String op, sign;
+	private int type;
 	private String _exprID;
 	private String _exprContent;
 	private String _exprDecision;
@@ -232,17 +233,32 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                	 stack.peek().add(cmd);
                	 verificaTipoAtribuicao(_exprID, _term);
                	 _term = null;
+               	 op = null;
                }
 			;
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { _exprDecision = _input.LT(-1).getText();
-                            useVariavel(_input.LT(-1).getText()); }
-                    OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    (ID   { useVariavel(_input.LT(-1).getText());}
-                    | NUMBER 
-                    | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                    ID    { op = null;
+                            type = -1;
+                            _exprDecision = _input.LT(-1).getText();
+                            useVariavel(_input.LT(-1).getText());
+                            _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
+                    OPREL { _exprDecision += _input.LT(-1).getText();
+                            op = _input.LT(-1).getText();
+                            if (op != null && !IsiOperator.isRelationalOperator(op)){
+                            	throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+                            }
+                           }
+                    (ID   { useVariavel(_input.LT(-1).getText());
+                            type = obtemTipoId(_input.LT(-1).getText());}
+                    | NUMBER  { type = IsiTypes.NUMBER;}
+                    | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
+                    )              { _exprDecision += _input.LT(-1).getText(); 
+                                     _attribTerm = _input.LT(-1).getText();
+                                     _term = atualizaTipoTermo(_attribTerm, _term, type, op);
+                                     _term = null;
+                                     op = null;}
                     FP 
                     'entao'
                     ACH 
@@ -271,12 +287,27 @@ cmdselecao  :  'se' AP
             ;
             
 cmdrepeticao : 'enquanto' AP
-                   		  ID    { _exprDecision = _input.LT(-1).getText();
-                   		          useVariavel(_input.LT(-1).getText()); }
-                    	  OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    	  (ID   { useVariavel(_input.LT(-1).getText());}
-                    	  | NUMBER
-                    	  | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                   		  ID    {  op = null;
+                                   type = -1;
+                                   _exprDecision = _input.LT(-1).getText();
+                                   useVariavel(_input.LT(-1).getText());
+                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
+                           OPREL { _exprDecision += _input.LT(-1).getText();
+                                   op = _input.LT(-1).getText();
+                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
+                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+                                   } 
+                                  }
+                           (ID   { useVariavel(_input.LT(-1).getText());
+                                   type = obtemTipoId(_input.LT(-1).getText()); }
+                           | NUMBER  { type = IsiTypes.NUMBER;}
+                           
+                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
+                           )              { _exprDecision += _input.LT(-1).getText(); 
+                                            _attribTerm = _input.LT(-1).getText();
+                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
+                                            _term = null;
+                                            op = null;  }
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -303,12 +334,26 @@ cmdrepeticao : 'enquanto' AP
                          	commands = stack.pop();	
                        	  } 
                 'enquanto' AP
-                   		   ID    { _exprDecision = _input.LT(-1).getText();
-                   		          useVariavel(_input.LT(-1).getText()); }
-                    	   OPREL { _exprDecision += _input.LT(-1).getText(); }
-                    	   (ID   { useVariavel(_input.LT(-1).getText());}
-                    	   | NUMBER
-                    	   | SIGNEDNUMBER) {_exprDecision += _input.LT(-1).getText(); }
+                   		   ID    { op = null;
+                                   type = -1;
+                                   _exprDecision = _input.LT(-1).getText();
+                                   useVariavel(_input.LT(-1).getText());
+                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
+                           OPREL { _exprDecision += _input.LT(-1).getText();
+                                   op = _input.LT(-1).getText();
+                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
+                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+                                   }  
+                                  }
+                           (ID   { useVariavel(_input.LT(-1).getText());
+                                   type = obtemTipoId(_input.LT(-1).getText());}
+                           | NUMBER  { type = IsiTypes.NUMBER;}
+                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
+                            )             { _exprDecision += _input.LT(-1).getText(); 
+                                            _attribTerm = _input.LT(-1).getText();
+                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
+                                            _term = null;
+                                            op = null;}
                     	   FP
                     	   POINT
                        {
@@ -317,7 +362,7 @@ cmdrepeticao : 'enquanto' AP
                    	   }
              	;
 			
-expr		:  (termo
+expr		:  (termo        
                 
                | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
@@ -331,11 +376,12 @@ expr		:  (termo
 	           termo)
 	            
 	           | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
-              	             _exprContent += _attribTerm;
+              	                _exprContent += _attribTerm;
+              	                op = "+";
               	       
-              	              /* Verificação de tipo*/
-	               	          _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
-                            }
+              	                /* Verificação de tipo*/
+	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+                              }
 	           )*
 			;
 			
@@ -359,8 +405,10 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
                       }
             | 
               SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	             if (op != null && op.contentEquals("+") && _attribTerm.substring(0, 1).contentEquals("+")){
+              	             	_attribTerm = _attribTerm.substring(1);
+              	             }
               	             _exprContent += _attribTerm;
-              	       
               	             /* Verificação de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                             }

@@ -26,6 +26,14 @@ public class IsiOperator implements IsiTypes {
 	}
 	
 	public static boolean isRelationalOperator(String op) {
+		if (op.contentEquals("<") || op.contentEquals(">") || op.contentEquals("<=") || op.contentEquals(">=")
+				|| op.contentEquals("!=") || op.contentEquals("==")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean isBooleanOperator(String op) {
 		if (op.contentEquals("&&") || op.contentEquals("||")) {
 			return true;
 		}
@@ -36,7 +44,7 @@ public class IsiOperator implements IsiTypes {
 		if (termType == -1) {
 			throw new IsiSemanticException("ERROR: type not found: "+termType);
 		}
-		if (termType == IsiTypes.NUMBER && !isNumericOperator(op)) {
+		if (termType == IsiTypes.NUMBER && !isNumericOperator(op) && !isRelationalOperator(op)) {
 			throw new IsiSemanticException("'"+term+"' is numeric type, but '"+op+"' is not a numeric operator.");
 		} else if (termType == IsiTypes.TEXT && !isTextualOperator(op)) {
 			throw new IsiSemanticException("'"+term+"' is text type, but '"+op+"' is not a textual operator.");
