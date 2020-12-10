@@ -132,7 +132,7 @@ grammar IsiLang;
 	}
 	
 	public void generateCode(){
-		program.generateTargetPrettyPrinter();
+		program.generateTarget();
 	}
 }
 
