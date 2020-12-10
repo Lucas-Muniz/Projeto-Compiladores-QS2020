@@ -8,6 +8,7 @@ double  c;
 double  d;
 String  t;
 double  f;
+double  i;
 System.out.println("Programa Teste");
 System.out.println("Digite A");
 a= _key.nextDouble();
@@ -47,5 +48,8 @@ while (a<b) {
     System.out.println(a);
     System.out.println("TESTE 1");
     a = a+1;
+}
+for (i=0; i<5; i++) {
+    System.out.println(a);
 }
   }}
