@@ -13,9 +13,14 @@ public class CommandLeitura extends AbstractCommand {
 	}
 	@Override
 	public String generateJavaCode() {
-		// TODO Auto-generated method stub
 		return id +"= _key." + (var.getType()== IsiVariable.NUMBER? "nextDouble();": "nextLine();");
 	}
+	
+	@Override
+	public String generateJavaCode(int n) {
+		return generateSpace(n) + id +" = _key." + (var.getType()== IsiVariable.NUMBER? "nextDouble();": "nextLine();");
+	}
+	
 	@Override
 	public String toString() {
 		return "CommandLeitura [id=" + id + "]";

@@ -214,7 +214,7 @@ public class IsiLangParser extends Parser {
 		}
 		
 		public void generateCode(){
-			program.generateTarget();
+			program.generateTargetPrettyPrinter();
 		}
 
 	public IsiLangParser(TokenStream input) {

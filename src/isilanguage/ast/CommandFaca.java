@@ -24,6 +24,19 @@ public class CommandFaca extends AbstractCommand {
 		return str.toString();
 	}
 	
+	@Override
+	public String generateJavaCode(int n) {
+		String space = generateSpace(n);
+		StringBuilder str = new StringBuilder();
+		str.append(space+"do {\n");
+		for (AbstractCommand cmd: commands) {
+			str.append(cmd.generateJavaCode(space.length()+numSpace)+"\n");
+		}
+		str.append(space+"} ");
+		str.append("while ("+condition+");\n");
+		return str.toString();
+	}
+	
 	public String toString() {
 		return "CommandFaca [commands=" + commands + ", condition=" + condition + "]";
 	}

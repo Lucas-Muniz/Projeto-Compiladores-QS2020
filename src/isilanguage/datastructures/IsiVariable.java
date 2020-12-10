@@ -66,6 +66,10 @@ public class IsiVariable extends IsiSymbol implements IsiTypes{
        return str + " "+super.name+";";
 	}
 	
+	public String generateJavaCode(int n) {
+	       return generateSpace(n) + this.generateJavaCode();
+		}
+	
 	
 
 }

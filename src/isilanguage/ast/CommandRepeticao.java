@@ -22,6 +22,19 @@ public class CommandRepeticao extends AbstractCommand {
 		str.append("}");
 		return str.toString();
 	}
+	
+	@Override
+	public String generateJavaCode(int n) {
+		String space = generateSpace(n);
+		StringBuilder str = new StringBuilder();
+		str.append(space+"while ("+condition+") {\n");
+		for (AbstractCommand cmd: commands) {
+			str.append(cmd.generateJavaCode(space.length()+numSpace)+"\n");
+		}
+		str.append(space+"}");
+		return str.toString();
+	}
+	
 	@Override
 	public String toString() {
 		return "CommandRepeticao [condition=" + condition + ", commands=" + commands + "]";

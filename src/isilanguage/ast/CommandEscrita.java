@@ -9,9 +9,14 @@ public class CommandEscrita extends AbstractCommand {
 	}
 	@Override
 	public String generateJavaCode() {
-		// TODO Auto-generated method stub
 		return "System.out.println("+id+");";
 	}
+	
+	@Override
+	public String generateJavaCode(int n) {
+		return generateSpace(n)+"System.out.println("+id+");";
+	}
+	
 	@Override
 	public String toString() {
 		return "CommandEscrita [id=" + id + "]";

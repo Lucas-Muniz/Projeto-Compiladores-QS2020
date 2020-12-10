@@ -130,7 +130,7 @@ grammar IsiLang;
 	}
 	
 	public void generateCode(){
-		program.generateTarget();
+		program.generateTargetPrettyPrinter();
 	}
 }
 

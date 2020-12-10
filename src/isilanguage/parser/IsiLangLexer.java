@@ -208,7 +208,7 @@ public class IsiLangLexer extends Lexer {
 		}
 		
 		public void generateCode(){
-			program.generateTarget();
+			program.generateTargetPrettyPrinter();
 		}
 
 
