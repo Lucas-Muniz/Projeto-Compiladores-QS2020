@@ -1,7 +1,6 @@
 import java.util.Scanner;
 
 public class MainClass{ 
-<<<<<<< HEAD
     public static void main(String args[]){
         Scanner _key = new Scanner(System.in);
         double  a;
@@ -10,6 +9,7 @@ public class MainClass{
         double  d;
         String  t;
         double  f;
+        double  i;
         System.out.println("Programa Teste");
         System.out.println("Digite A");
         a = _key.nextDouble();
@@ -20,28 +20,10 @@ public class MainClass{
         } else {
             c = (a-b)/(2+5.6);
         }
-=======
-  public static void main(String args[]){
-       Scanner _key = new Scanner(System.in);
-double  a;
-double  b;
-double  c;
-double  d;
-String  t;
-double  f;
-double  i;
-System.out.println("Programa Teste");
-System.out.println("Digite A");
-a= _key.nextDouble();
-System.out.println("Digite B");
-b= _key.nextDouble();
-if (a>b) {
-    c = a+b;
-} else {
-    c = (a-b)/(2+5.6);
-}
->>>>>>> ga-santos-for
 
+        if (a!=b) {
+            c = a+b;
+        }
         t = _key.nextLine();
         t = "hello"+" "+("world");
         f = (a+c)/(2+5.6);
@@ -60,7 +42,6 @@ if (a>b) {
             System.out.println(a);
         } while (a!=0);
 
-<<<<<<< HEAD
         System.out.println("C e igual a ");
         System.out.println(c);
         d = c*(a+b);
@@ -72,22 +53,9 @@ if (a>b) {
             System.out.println("TESTE 1");
             a = a+1;
         }
+        for (i=0; i<5; i++) {
+            System.out.println(a);
+            System.out.println(i);
+        }
     }
 }
-=======
-System.out.println("C e igual a ");
-System.out.println(c);
-d = c*(a+b);
-System.out.println("D e igual a ");
-System.out.println(d);
-while (a<b) {
-    a= _key.nextDouble();
-    System.out.println(a);
-    System.out.println("TESTE 1");
-    a = a+1;
-}
-for (i=0; i<5; i++) {
-    System.out.println(a);
-}
-  }}
->>>>>>> ga-santos-for

@@ -183,7 +183,7 @@ public class IsiLangLexer extends Lexer {
 		}
 		
 		public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-			 /* VerificaÃ§Ã£o de tipo*/
+			 /* Verificação de tipo*/
 		     if (_term == null){
 		     	return  new IsiTerm(termo, tipo);
 		     } else {

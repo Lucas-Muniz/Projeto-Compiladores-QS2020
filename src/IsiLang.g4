@@ -104,7 +104,7 @@ grammar IsiLang;
 	}
 	
 	public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-		 /* VerificaÃ§Ã£o de tipo*/
+		 /* Verificação de tipo*/
 	     if (_term == null){
 	     	return  new IsiTerm(termo, tipo);
 	     } else {
@@ -271,6 +271,8 @@ cmdselecao  :  'se' AP
                     FCH 
                     {
                        listaTrue = stack.pop();	
+                       listaFalse = new ArrayList<AbstractCommand>();
+                   	   CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
                     } 
                    ('senao' 
                    	 ACH
@@ -282,11 +284,15 @@ cmdselecao  :  'se' AP
                    	FCH
                    	{
                    		listaFalse = stack.pop();
-                   		CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
-                   		stack.peek().add(cmd);
+                   		cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
                    	}
-                   )?
-            ;
+                   )? 
+                   {
+                   		stack.peek().add(cmd);
+                   }
+                   	
+                   
+            ; 
             
 cmdrepeticao : 'enquanto' AP
                    		  ID    {  op = null;
@@ -435,7 +441,7 @@ expr		:  (termo
                | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
               	       
-              	                 /* VerificaÃ§Ã£o de tipo*/
+              	                 /* Verificação de tipo*/
 	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                                }) 
                                

@@ -24,6 +24,18 @@ public class CommandFor extends AbstractCommand {
 		return str.toString();
 	}
 	
+	@Override
+	public String generateJavaCode(int n) {
+		String space = generateSpace(n);
+		StringBuilder str = new StringBuilder();
+		str.append(space+"for ("+ condition + ") {\n");
+		for (AbstractCommand cmd: commands) {
+			str.append(cmd.generateJavaCode(space.length()+numSpace)+"\n");
+		}
+		str.append(space+"}");
+		return str.toString();
+	}
+	
 	public String toString() {
 		return "CommandFor [condition = " + condition + ", commands = " + commands + "]";
 	}

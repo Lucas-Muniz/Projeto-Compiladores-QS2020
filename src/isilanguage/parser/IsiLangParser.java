@@ -189,7 +189,7 @@ public class IsiLangParser extends Parser {
 		}
 		
 		public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-			 /* VerificaÃ§Ã£o de tipo*/
+			 /* Verificação de tipo*/
 		     if (_term == null){
 		     	return  new IsiTerm(termo, tipo);
 		     } else {
@@ -939,6 +939,8 @@ public class IsiLangParser extends Parser {
 			match(FCH);
 
 			                       listaTrue = stack.pop();	
+			                       listaFalse = new ArrayList<AbstractCommand>();
+			                   	   CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
 			                    
 			setState(135);
 			_errHandler.sync(this);
@@ -973,12 +975,14 @@ public class IsiLangParser extends Parser {
 				match(FCH);
 
 				                   		listaFalse = stack.pop();
-				                   		CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
-				                   		stack.peek().add(cmd);
+				                   		cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
 				                   	
 				}
 			}
 
+
+			                   		stack.peek().add(cmd);
+			                   
 			}
 		}
 		catch (RecognitionException re) {
@@ -1042,24 +1046,24 @@ public class IsiLangParser extends Parser {
 		enterRule(_localctx, 20, RULE_cmdrepeticao);
 		int _la;
 		try {
-			setState(239);
+			setState(241);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__10:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(137);
-				match(T__10);
-				setState(138);
-				match(AP);
 				setState(139);
+				match(T__10);
+				setState(140);
+				match(AP);
+				setState(141);
 				match(ID);
 				  op = null;
 				                                   type = -1;
 				                                   _exprDecision = _input.LT(-1).getText();
 				                                   useVariavel(_input.LT(-1).getText());
 				                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); 
-				setState(141);
+				setState(143);
 				match(OPREL);
 				 _exprDecision += _input.LT(-1).getText();
 				                                   op = _input.LT(-1).getText();
@@ -1067,12 +1071,12 @@ public class IsiLangParser extends Parser {
 				                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
 				                                   } 
 				                                  
-				setState(149);
+				setState(151);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ID:
 					{
-					setState(143);
+					setState(145);
 					match(ID);
 					 useVariavel(_input.LT(-1).getText());
 					                                   type = obtemTipoId(_input.LT(-1).getText()); 
@@ -1080,14 +1084,14 @@ public class IsiLangParser extends Parser {
 					break;
 				case NUMBER:
 					{
-					setState(145);
+					setState(147);
 					match(NUMBER);
 					 type = IsiTypes.NUMBER;
 					}
 					break;
 				case SIGNEDNUMBER:
 					{
-					setState(147);
+					setState(149);
 					match(SIGNEDNUMBER);
 					 type = IsiTypes.NUMBER;
 					}
@@ -1100,28 +1104,28 @@ public class IsiLangParser extends Parser {
 				                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
 				                                            _term = null;
 				                                            op = null;  
-				setState(152);
+				setState(154);
 				match(FP);
-				setState(153);
+				setState(155);
 				match(ACH);
 				 curThread = new ArrayList<AbstractCommand>(); 
 				                      	  	stack.push(curThread);
 				                   		  
-				setState(156); 
+				setState(158); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(155);
+					setState(157);
 					cmd();
 					}
 					}
-					setState(158); 
+					setState(160); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__10) | (1L << T__11) | (1L << T__12) | (1L << ID))) != 0) );
-				setState(160);
+				setState(162);
 				match(FCH);
 
 				                        	commands = stack.pop();	
@@ -1135,44 +1139,44 @@ public class IsiLangParser extends Parser {
 			case T__11:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(164);
+				setState(166);
 				match(T__11);
-				setState(165);
+				setState(167);
 				match(ACH);
 				 curThread = new ArrayList<AbstractCommand>(); 
 				                       	 	stack.push(curThread);
 				                   	   	  
-				setState(168); 
+				setState(170); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(167);
+					setState(169);
 					cmd();
 					}
 					}
-					setState(170); 
+					setState(172); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__10) | (1L << T__11) | (1L << T__12) | (1L << ID))) != 0) );
-				setState(172);
+				setState(174);
 				match(FCH);
 
 				                         	commands = stack.pop();	
 				                       	  
-				setState(174);
-				match(T__10);
-				setState(175);
-				match(AP);
 				setState(176);
+				match(T__10);
+				setState(177);
+				match(AP);
+				setState(178);
 				match(ID);
 				 op = null;
 				                                   type = -1;
 				                                   _exprDecision = _input.LT(-1).getText();
 				                                   useVariavel(_input.LT(-1).getText());
 				                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); 
-				setState(178);
+				setState(180);
 				match(OPREL);
 				 _exprDecision += _input.LT(-1).getText();
 				                                   op = _input.LT(-1).getText();
@@ -1180,12 +1184,12 @@ public class IsiLangParser extends Parser {
 				                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
 				                                   }  
 				                                  
-				setState(186);
+				setState(188);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case ID:
 					{
-					setState(180);
+					setState(182);
 					match(ID);
 					 useVariavel(_input.LT(-1).getText());
 					                                   type = obtemTipoId(_input.LT(-1).getText());
@@ -1193,14 +1197,14 @@ public class IsiLangParser extends Parser {
 					break;
 				case NUMBER:
 					{
-					setState(182);
+					setState(184);
 					match(NUMBER);
 					 type = IsiTypes.NUMBER;
 					}
 					break;
 				case SIGNEDNUMBER:
 					{
-					setState(184);
+					setState(186);
 					match(SIGNEDNUMBER);
 					 type = IsiTypes.NUMBER;
 					}
@@ -1213,9 +1217,9 @@ public class IsiLangParser extends Parser {
 				                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
 				                                            _term = null;
 				                                            op = null;
-				setState(189);
+				setState(191);
 				match(FP);
-				setState(190);
+				setState(192);
 				match(POINT);
 
 				                   	   	  CommandFaca cmd = new CommandFaca(_exprDecision, commands);
@@ -1226,20 +1230,20 @@ public class IsiLangParser extends Parser {
 			case T__12:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(193);
+				setState(195);
 				match(T__12);
-				setState(194);
+				setState(196);
 				match(AP);
-				setState(211);
+				setState(213);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case T__3:
 				case T__4:
 					{
 					{
-					setState(195);
+					setState(197);
 					tipo();
-					setState(196);
+					setState(198);
 					match(ID);
 					_varName = _input.LT(-1).getText();
 								                              _varValue = null;
@@ -1255,10 +1259,10 @@ public class IsiLangParser extends Parser {
 								                              
 								                           
 								                            
-					setState(198);
+					setState(200);
 					match(ATTR);
 					 _exprDecision += _input.LT(-1).getText();
-					setState(200);
+					setState(202);
 					_la = _input.LA(1);
 					if ( !(_la==ID || _la==NUMBER) ) {
 					_errHandler.recoverInline(this);
@@ -1283,7 +1287,7 @@ public class IsiLangParser extends Parser {
 				case ID:
 					{
 					{
-					setState(204);
+					setState(206);
 					match(ID);
 					 _varName = _input.LT(-1).getText();
 															if (!symbolTable.exists(_varName)){
@@ -1294,10 +1298,10 @@ public class IsiLangParser extends Parser {
 								                              }
 													
 					}
-					setState(207);
+					setState(209);
 					match(ATTR);
 					 _exprDecision += _input.LT(-1).getText();
-					setState(209);
+					setState(211);
 					_la = _input.LA(1);
 					if ( !(_la==ID || _la==NUMBER) ) {
 					_errHandler.recoverInline(this);
@@ -1313,16 +1317,16 @@ public class IsiLangParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(213);
+				setState(215);
 				match(SC);
 				 _exprDecision += _input.LT(-1).getText() + " ";
-				setState(215);
+				setState(217);
 				match(ID);
 				 _exprDecision += _input.LT(-1).getText();
-				setState(217);
+				setState(219);
 				match(OPREL);
 				 _exprDecision += _input.LT(-1).getText(); 
-				setState(219);
+				setState(221);
 				_la = _input.LA(1);
 				if ( !(_la==ID || _la==NUMBER) ) {
 				_errHandler.recoverInline(this);
@@ -1333,37 +1337,37 @@ public class IsiLangParser extends Parser {
 					consume();
 				}
 				_exprDecision +=_input.LT(-1).getText(); 
-				setState(221);
+				setState(223);
 				match(SC);
 				 _exprDecision += _input.LT(-1).getText() + " ";
-				setState(223);
+				setState(225);
 				match(ID);
 				 _exprDecision += _input.LT(-1).getText();
-				setState(225);
+				setState(227);
 				match(INC);
 				 _exprDecision += _input.LT(-1).getText();
-				setState(227);
+				setState(229);
 				match(FP);
-				setState(228);
+				setState(230);
 				match(ACH);
 				 curThread = new ArrayList<AbstractCommand>(); 
 												stack.push(curThread);
 											
-				setState(231); 
+				setState(233); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
 					{
 					{
-					setState(230);
+					setState(232);
 					cmd();
 					}
 					}
-					setState(233); 
+					setState(235); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__5) | (1L << T__6) | (1L << T__7) | (1L << T__10) | (1L << T__11) | (1L << T__12) | (1L << ID))) != 0) );
-				setState(235);
+				setState(237);
 				match(FCH);
 
 												listaTrue = stack.pop();	
@@ -1425,51 +1429,51 @@ public class IsiLangParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(244);
+			setState(246);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,17,_ctx) ) {
 			case 1:
 				{
-				setState(241);
+				setState(243);
 				termo();
 				}
 				break;
 			case 2:
 				{
-				setState(242);
+				setState(244);
 				match(SIGNEDNUMBER);
 				 _attribTerm = _input.LT(-1).getText();
 				              	                _exprContent += _attribTerm;
 				              	       
-				              	                 /* VerificaÃ§Ã£o de tipo*/
+				              	                 /* Verificação de tipo*/
 					               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
 				                               
 				}
 				break;
 			}
-			setState(253);
+			setState(255);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==OP || _la==SIGNEDNUMBER) {
 				{
-				setState(251);
+				setState(253);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
 				case OP:
 					{
 					{
-					setState(246);
+					setState(248);
 					match(OP);
 					 op = _input.LT(-1).getText();
 						                    _exprContent += op;
-					setState(248);
+					setState(250);
 					termo();
 					}
 					}
 					break;
 				case SIGNEDNUMBER:
 					{
-					setState(249);
+					setState(251);
 					match(SIGNEDNUMBER);
 					 _attribTerm = _input.LT(-1).getText();
 					              	                _exprContent += _attribTerm;
@@ -1484,7 +1488,7 @@ public class IsiLangParser extends Parser {
 					throw new NoViableAltException(this);
 				}
 				}
-				setState(255);
+				setState(257);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -1527,13 +1531,13 @@ public class IsiLangParser extends Parser {
 		TermoContext _localctx = new TermoContext(_ctx, getState());
 		enterRule(_localctx, 24, RULE_termo);
 		try {
-			setState(270);
+			setState(272);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ID:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(256);
+				setState(258);
 				match(ID);
 				 _attribTerm = _input.LT(-1).getText();
 				                   verificaID(_attribTerm);
@@ -1551,7 +1555,7 @@ public class IsiLangParser extends Parser {
 			case NUMBER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(258);
+				setState(260);
 				match(NUMBER);
 				 _attribTerm = _input.LT(-1).getText();
 				              	       _exprContent += _attribTerm;
@@ -1564,7 +1568,7 @@ public class IsiLangParser extends Parser {
 			case SIGNEDNUMBER:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(260);
+				setState(262);
 				match(SIGNEDNUMBER);
 				 _attribTerm = _input.LT(-1).getText();
 				              	             if (op != null && op.contentEquals("+") && _attribTerm.substring(0, 1).contentEquals("+")){
@@ -1579,7 +1583,7 @@ public class IsiLangParser extends Parser {
 			case TEXTO:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(262);
+				setState(264);
 				match(TEXTO);
 				 _attribTerm = _input.LT(-1).getText();
 				              	      _exprContent += _attribTerm;
@@ -1592,12 +1596,12 @@ public class IsiLangParser extends Parser {
 			case AP:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(264);
+				setState(266);
 				match(AP);
 				_exprContent += _input.LT(-1).getText(); 
-				setState(266);
+				setState(268);
 				expr();
-				setState(267);
+				setState(269);
 				match(FP);
 				 _exprContent += _input.LT(-1).getText(); 
 				}
@@ -1618,7 +1622,7 @@ public class IsiLangParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 \u0113\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 \u0115\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\2\3\2\3\2\3\3\6\3$\n\3\r\3"+
 		"\16\3%\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4/\n\4\f\4\16\4\62\13\4\3\4\3\4\3"+
@@ -1627,86 +1631,87 @@ public class IsiLangParser extends Parser {
 		"W\n\t\3\t\3\t\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3"+
 		"\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13q\n\13\3\13\3\13\3\13"+
 		"\3\13\3\13\3\13\6\13y\n\13\r\13\16\13z\3\13\3\13\3\13\3\13\3\13\3\13\6"+
-		"\13\u0083\n\13\r\13\16\13\u0084\3\13\3\13\3\13\5\13\u008a\n\13\3\f\3\f"+
-		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u0098\n\f\3\f\3\f\3\f\3\f"+
-		"\3\f\6\f\u009f\n\f\r\f\16\f\u00a0\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\6\f"+
-		"\u00ab\n\f\r\f\16\f\u00ac\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f"+
-		"\3\f\3\f\3\f\5\f\u00bd\n\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f"+
-		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00d6\n\f\3\f\3\f"+
-		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\6\f\u00ea"+
-		"\n\f\r\f\16\f\u00eb\3\f\3\f\3\f\3\f\5\f\u00f2\n\f\3\r\3\r\3\r\5\r\u00f7"+
-		"\n\r\3\r\3\r\3\r\3\r\3\r\7\r\u00fe\n\r\f\r\16\r\u0101\13\r\3\16\3\16\3"+
-		"\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0111"+
-		"\n\16\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\3\3\2\33\34\2\u0124"+
-		"\2\34\3\2\2\2\4#\3\2\2\2\6\'\3\2\2\2\b9\3\2\2\2\n;\3\2\2\2\fF\3\2\2\2"+
-		"\16H\3\2\2\2\20P\3\2\2\2\22\\\3\2\2\2\24d\3\2\2\2\26\u00f1\3\2\2\2\30"+
-		"\u00f6\3\2\2\2\32\u0110\3\2\2\2\34\35\7\3\2\2\35\36\5\4\3\2\36\37\5\n"+
-		"\6\2\37 \7\4\2\2 !\b\2\1\2!\3\3\2\2\2\"$\5\6\4\2#\"\3\2\2\2$%\3\2\2\2"+
-		"%#\3\2\2\2%&\3\2\2\2&\5\3\2\2\2\'(\7\5\2\2()\5\b\5\2)*\7\33\2\2*\60\b"+
-		"\4\1\2+,\7\27\2\2,-\7\33\2\2-/\b\4\1\2.+\3\2\2\2/\62\3\2\2\2\60.\3\2\2"+
-		"\2\60\61\3\2\2\2\61\63\3\2\2\2\62\60\3\2\2\2\63\64\7\23\2\2\64\7\3\2\2"+
-		"\2\65\66\7\6\2\2\66:\b\5\1\2\678\7\7\2\28:\b\5\1\29\65\3\2\2\29\67\3\2"+
-		"\2\2:\t\3\2\2\2;=\b\6\1\2<>\5\f\7\2=<\3\2\2\2>?\3\2\2\2?=\3\2\2\2?@\3"+
-		"\2\2\2@\13\3\2\2\2AG\5\16\b\2BG\5\20\t\2CG\5\22\n\2DG\5\24\13\2EG\5\26"+
-		"\f\2FA\3\2\2\2FB\3\2\2\2FC\3\2\2\2FD\3\2\2\2FE\3\2\2\2G\r\3\2\2\2HI\7"+
-		"\b\2\2IJ\7\20\2\2JK\7\33\2\2KL\b\b\1\2LM\7\21\2\2MN\7\23\2\2NO\b\b\1\2"+
-		"O\17\3\2\2\2PQ\7\t\2\2QV\7\20\2\2RS\7\37\2\2SW\b\t\1\2TU\7\33\2\2UW\b"+
-		"\t\1\2VR\3\2\2\2VT\3\2\2\2WX\3\2\2\2XY\7\21\2\2YZ\7\23\2\2Z[\b\t\1\2["+
-		"\21\3\2\2\2\\]\7\33\2\2]^\b\n\1\2^_\7\26\2\2_`\b\n\1\2`a\5\30\r\2ab\7"+
-		"\23\2\2bc\b\n\1\2c\23\3\2\2\2de\7\n\2\2ef\7\20\2\2fg\7\33\2\2gh\b\13\1"+
-		"\2hi\7\32\2\2ip\b\13\1\2jk\7\33\2\2kq\b\13\1\2lm\7\34\2\2mq\b\13\1\2n"+
-		"o\7\35\2\2oq\b\13\1\2pj\3\2\2\2pl\3\2\2\2pn\3\2\2\2qr\3\2\2\2rs\b\13\1"+
-		"\2st\7\21\2\2tu\7\13\2\2uv\7\30\2\2vx\b\13\1\2wy\5\f\7\2xw\3\2\2\2yz\3"+
-		"\2\2\2zx\3\2\2\2z{\3\2\2\2{|\3\2\2\2|}\7\31\2\2}\u0089\b\13\1\2~\177\7"+
-		"\f\2\2\177\u0080\7\30\2\2\u0080\u0082\b\13\1\2\u0081\u0083\5\f\7\2\u0082"+
-		"\u0081\3\2\2\2\u0083\u0084\3\2\2\2\u0084\u0082\3\2\2\2\u0084\u0085\3\2"+
-		"\2\2\u0085\u0086\3\2\2\2\u0086\u0087\7\31\2\2\u0087\u0088\b\13\1\2\u0088"+
-		"\u008a\3\2\2\2\u0089~\3\2\2\2\u0089\u008a\3\2\2\2\u008a\25\3\2\2\2\u008b"+
-		"\u008c\7\r\2\2\u008c\u008d\7\20\2\2\u008d\u008e\7\33\2\2\u008e\u008f\b"+
-		"\f\1\2\u008f\u0090\7\32\2\2\u0090\u0097\b\f\1\2\u0091\u0092\7\33\2\2\u0092"+
-		"\u0098\b\f\1\2\u0093\u0094\7\34\2\2\u0094\u0098\b\f\1\2\u0095\u0096\7"+
-		"\35\2\2\u0096\u0098\b\f\1\2\u0097\u0091\3\2\2\2\u0097\u0093\3\2\2\2\u0097"+
-		"\u0095\3\2\2\2\u0098\u0099\3\2\2\2\u0099\u009a\b\f\1\2\u009a\u009b\7\21"+
-		"\2\2\u009b\u009c\7\30\2\2\u009c\u009e\b\f\1\2\u009d\u009f\5\f\7\2\u009e"+
-		"\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0\u009e\3\2\2\2\u00a0\u00a1\3\2"+
-		"\2\2\u00a1\u00a2\3\2\2\2\u00a2\u00a3\7\31\2\2\u00a3\u00a4\b\f\1\2\u00a4"+
-		"\u00a5\b\f\1\2\u00a5\u00f2\3\2\2\2\u00a6\u00a7\7\16\2\2\u00a7\u00a8\7"+
-		"\30\2\2\u00a8\u00aa\b\f\1\2\u00a9\u00ab\5\f\7\2\u00aa\u00a9\3\2\2\2\u00ab"+
-		"\u00ac\3\2\2\2\u00ac\u00aa\3\2\2\2\u00ac\u00ad\3\2\2\2\u00ad\u00ae\3\2"+
-		"\2\2\u00ae\u00af\7\31\2\2\u00af\u00b0\b\f\1\2\u00b0\u00b1\7\r\2\2\u00b1"+
-		"\u00b2\7\20\2\2\u00b2\u00b3\7\33\2\2\u00b3\u00b4\b\f\1\2\u00b4\u00b5\7"+
-		"\32\2\2\u00b5\u00bc\b\f\1\2\u00b6\u00b7\7\33\2\2\u00b7\u00bd\b\f\1\2\u00b8"+
-		"\u00b9\7\34\2\2\u00b9\u00bd\b\f\1\2\u00ba\u00bb\7\35\2\2\u00bb\u00bd\b"+
-		"\f\1\2\u00bc\u00b6\3\2\2\2\u00bc\u00b8\3\2\2\2\u00bc\u00ba\3\2\2\2\u00bd"+
-		"\u00be\3\2\2\2\u00be\u00bf\b\f\1\2\u00bf\u00c0\7\21\2\2\u00c0\u00c1\7"+
-		"\23\2\2\u00c1\u00c2\b\f\1\2\u00c2\u00f2\3\2\2\2\u00c3\u00c4\7\17\2\2\u00c4"+
-		"\u00d5\7\20\2\2\u00c5\u00c6\5\b\5\2\u00c6\u00c7\7\33\2\2\u00c7\u00c8\b"+
-		"\f\1\2\u00c8\u00c9\7\26\2\2\u00c9\u00ca\b\f\1\2\u00ca\u00cb\t\2\2\2\u00cb"+
-		"\u00cc\b\f\1\2\u00cc\u00cd\b\f\1\2\u00cd\u00d6\3\2\2\2\u00ce\u00cf\7\33"+
-		"\2\2\u00cf\u00d0\b\f\1\2\u00d0\u00d1\3\2\2\2\u00d1\u00d2\7\26\2\2\u00d2"+
-		"\u00d3\b\f\1\2\u00d3\u00d4\t\2\2\2\u00d4\u00d6\b\f\1\2\u00d5\u00c5\3\2"+
-		"\2\2\u00d5\u00ce\3\2\2\2\u00d6\u00d7\3\2\2\2\u00d7\u00d8\7\22\2\2\u00d8"+
-		"\u00d9\b\f\1\2\u00d9\u00da\7\33\2\2\u00da\u00db\b\f\1\2\u00db\u00dc\7"+
-		"\32\2\2\u00dc\u00dd\b\f\1\2\u00dd\u00de\t\2\2\2\u00de\u00df\b\f\1\2\u00df"+
-		"\u00e0\7\22\2\2\u00e0\u00e1\b\f\1\2\u00e1\u00e2\7\33\2\2\u00e2\u00e3\b"+
-		"\f\1\2\u00e3\u00e4\7\25\2\2\u00e4\u00e5\b\f\1\2\u00e5\u00e6\7\21\2\2\u00e6"+
-		"\u00e7\7\30\2\2\u00e7\u00e9\b\f\1\2\u00e8\u00ea\5\f\7\2\u00e9\u00e8\3"+
-		"\2\2\2\u00ea\u00eb\3\2\2\2\u00eb\u00e9\3\2\2\2\u00eb\u00ec\3\2\2\2\u00ec"+
-		"\u00ed\3\2\2\2\u00ed\u00ee\7\31\2\2\u00ee\u00ef\b\f\1\2\u00ef\u00f0\b"+
-		"\f\1\2\u00f0\u00f2\3\2\2\2\u00f1\u008b\3\2\2\2\u00f1\u00a6\3\2\2\2\u00f1"+
-		"\u00c3\3\2\2\2\u00f2\27\3\2\2\2\u00f3\u00f7\5\32\16\2\u00f4\u00f5\7\35"+
-		"\2\2\u00f5\u00f7\b\r\1\2\u00f6\u00f3\3\2\2\2\u00f6\u00f4\3\2\2\2\u00f7"+
-		"\u00ff\3\2\2\2\u00f8\u00f9\7\24\2\2\u00f9\u00fa\b\r\1\2\u00fa\u00fe\5"+
-		"\32\16\2\u00fb\u00fc\7\35\2\2\u00fc\u00fe\b\r\1\2\u00fd\u00f8\3\2\2\2"+
-		"\u00fd\u00fb\3\2\2\2\u00fe\u0101\3\2\2\2\u00ff\u00fd\3\2\2\2\u00ff\u0100"+
-		"\3\2\2\2\u0100\31\3\2\2\2\u0101\u00ff\3\2\2\2\u0102\u0103\7\33\2\2\u0103"+
-		"\u0111\b\16\1\2\u0104\u0105\7\34\2\2\u0105\u0111\b\16\1\2\u0106\u0107"+
-		"\7\35\2\2\u0107\u0111\b\16\1\2\u0108\u0109\7\37\2\2\u0109\u0111\b\16\1"+
-		"\2\u010a\u010b\7\20\2\2\u010b\u010c\b\16\1\2\u010c\u010d\5\30\r\2\u010d"+
-		"\u010e\7\21\2\2\u010e\u010f\b\16\1\2\u010f\u0111\3\2\2\2\u0110\u0102\3"+
-		"\2\2\2\u0110\u0104\3\2\2\2\u0110\u0106\3\2\2\2\u0110\u0108\3\2\2\2\u0110"+
-		"\u010a\3\2\2\2\u0111\33\3\2\2\2\27%\609?FVpz\u0084\u0089\u0097\u00a0\u00ac"+
-		"\u00bc\u00d5\u00eb\u00f1\u00f6\u00fd\u00ff\u0110";
+		"\13\u0083\n\13\r\13\16\13\u0084\3\13\3\13\3\13\5\13\u008a\n\13\3\13\3"+
+		"\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u009a\n\f\3\f"+
+		"\3\f\3\f\3\f\3\f\6\f\u00a1\n\f\r\f\16\f\u00a2\3\f\3\f\3\f\3\f\3\f\3\f"+
+		"\3\f\3\f\6\f\u00ad\n\f\r\f\16\f\u00ae\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f"+
+		"\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00bf\n\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f"+
+		"\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\5\f\u00d8"+
+		"\n\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3"+
+		"\f\3\f\6\f\u00ec\n\f\r\f\16\f\u00ed\3\f\3\f\3\f\3\f\5\f\u00f4\n\f\3\r"+
+		"\3\r\3\r\5\r\u00f9\n\r\3\r\3\r\3\r\3\r\3\r\7\r\u0100\n\r\f\r\16\r\u0103"+
+		"\13\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16"+
+		"\3\16\5\16\u0113\n\16\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\3"+
+		"\3\2\33\34\2\u0126\2\34\3\2\2\2\4#\3\2\2\2\6\'\3\2\2\2\b9\3\2\2\2\n;\3"+
+		"\2\2\2\fF\3\2\2\2\16H\3\2\2\2\20P\3\2\2\2\22\\\3\2\2\2\24d\3\2\2\2\26"+
+		"\u00f3\3\2\2\2\30\u00f8\3\2\2\2\32\u0112\3\2\2\2\34\35\7\3\2\2\35\36\5"+
+		"\4\3\2\36\37\5\n\6\2\37 \7\4\2\2 !\b\2\1\2!\3\3\2\2\2\"$\5\6\4\2#\"\3"+
+		"\2\2\2$%\3\2\2\2%#\3\2\2\2%&\3\2\2\2&\5\3\2\2\2\'(\7\5\2\2()\5\b\5\2)"+
+		"*\7\33\2\2*\60\b\4\1\2+,\7\27\2\2,-\7\33\2\2-/\b\4\1\2.+\3\2\2\2/\62\3"+
+		"\2\2\2\60.\3\2\2\2\60\61\3\2\2\2\61\63\3\2\2\2\62\60\3\2\2\2\63\64\7\23"+
+		"\2\2\64\7\3\2\2\2\65\66\7\6\2\2\66:\b\5\1\2\678\7\7\2\28:\b\5\1\29\65"+
+		"\3\2\2\29\67\3\2\2\2:\t\3\2\2\2;=\b\6\1\2<>\5\f\7\2=<\3\2\2\2>?\3\2\2"+
+		"\2?=\3\2\2\2?@\3\2\2\2@\13\3\2\2\2AG\5\16\b\2BG\5\20\t\2CG\5\22\n\2DG"+
+		"\5\24\13\2EG\5\26\f\2FA\3\2\2\2FB\3\2\2\2FC\3\2\2\2FD\3\2\2\2FE\3\2\2"+
+		"\2G\r\3\2\2\2HI\7\b\2\2IJ\7\20\2\2JK\7\33\2\2KL\b\b\1\2LM\7\21\2\2MN\7"+
+		"\23\2\2NO\b\b\1\2O\17\3\2\2\2PQ\7\t\2\2QV\7\20\2\2RS\7\37\2\2SW\b\t\1"+
+		"\2TU\7\33\2\2UW\b\t\1\2VR\3\2\2\2VT\3\2\2\2WX\3\2\2\2XY\7\21\2\2YZ\7\23"+
+		"\2\2Z[\b\t\1\2[\21\3\2\2\2\\]\7\33\2\2]^\b\n\1\2^_\7\26\2\2_`\b\n\1\2"+
+		"`a\5\30\r\2ab\7\23\2\2bc\b\n\1\2c\23\3\2\2\2de\7\n\2\2ef\7\20\2\2fg\7"+
+		"\33\2\2gh\b\13\1\2hi\7\32\2\2ip\b\13\1\2jk\7\33\2\2kq\b\13\1\2lm\7\34"+
+		"\2\2mq\b\13\1\2no\7\35\2\2oq\b\13\1\2pj\3\2\2\2pl\3\2\2\2pn\3\2\2\2qr"+
+		"\3\2\2\2rs\b\13\1\2st\7\21\2\2tu\7\13\2\2uv\7\30\2\2vx\b\13\1\2wy\5\f"+
+		"\7\2xw\3\2\2\2yz\3\2\2\2zx\3\2\2\2z{\3\2\2\2{|\3\2\2\2|}\7\31\2\2}\u0089"+
+		"\b\13\1\2~\177\7\f\2\2\177\u0080\7\30\2\2\u0080\u0082\b\13\1\2\u0081\u0083"+
+		"\5\f\7\2\u0082\u0081\3\2\2\2\u0083\u0084\3\2\2\2\u0084\u0082\3\2\2\2\u0084"+
+		"\u0085\3\2\2\2\u0085\u0086\3\2\2\2\u0086\u0087\7\31\2\2\u0087\u0088\b"+
+		"\13\1\2\u0088\u008a\3\2\2\2\u0089~\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b"+
+		"\3\2\2\2\u008b\u008c\b\13\1\2\u008c\25\3\2\2\2\u008d\u008e\7\r\2\2\u008e"+
+		"\u008f\7\20\2\2\u008f\u0090\7\33\2\2\u0090\u0091\b\f\1\2\u0091\u0092\7"+
+		"\32\2\2\u0092\u0099\b\f\1\2\u0093\u0094\7\33\2\2\u0094\u009a\b\f\1\2\u0095"+
+		"\u0096\7\34\2\2\u0096\u009a\b\f\1\2\u0097\u0098\7\35\2\2\u0098\u009a\b"+
+		"\f\1\2\u0099\u0093\3\2\2\2\u0099\u0095\3\2\2\2\u0099\u0097\3\2\2\2\u009a"+
+		"\u009b\3\2\2\2\u009b\u009c\b\f\1\2\u009c\u009d\7\21\2\2\u009d\u009e\7"+
+		"\30\2\2\u009e\u00a0\b\f\1\2\u009f\u00a1\5\f\7\2\u00a0\u009f\3\2\2\2\u00a1"+
+		"\u00a2\3\2\2\2\u00a2\u00a0\3\2\2\2\u00a2\u00a3\3\2\2\2\u00a3\u00a4\3\2"+
+		"\2\2\u00a4\u00a5\7\31\2\2\u00a5\u00a6\b\f\1\2\u00a6\u00a7\b\f\1\2\u00a7"+
+		"\u00f4\3\2\2\2\u00a8\u00a9\7\16\2\2\u00a9\u00aa\7\30\2\2\u00aa\u00ac\b"+
+		"\f\1\2\u00ab\u00ad\5\f\7\2\u00ac\u00ab\3\2\2\2\u00ad\u00ae\3\2\2\2\u00ae"+
+		"\u00ac\3\2\2\2\u00ae\u00af\3\2\2\2\u00af\u00b0\3\2\2\2\u00b0\u00b1\7\31"+
+		"\2\2\u00b1\u00b2\b\f\1\2\u00b2\u00b3\7\r\2\2\u00b3\u00b4\7\20\2\2\u00b4"+
+		"\u00b5\7\33\2\2\u00b5\u00b6\b\f\1\2\u00b6\u00b7\7\32\2\2\u00b7\u00be\b"+
+		"\f\1\2\u00b8\u00b9\7\33\2\2\u00b9\u00bf\b\f\1\2\u00ba\u00bb\7\34\2\2\u00bb"+
+		"\u00bf\b\f\1\2\u00bc\u00bd\7\35\2\2\u00bd\u00bf\b\f\1\2\u00be\u00b8\3"+
+		"\2\2\2\u00be\u00ba\3\2\2\2\u00be\u00bc\3\2\2\2\u00bf\u00c0\3\2\2\2\u00c0"+
+		"\u00c1\b\f\1\2\u00c1\u00c2\7\21\2\2\u00c2\u00c3\7\23\2\2\u00c3\u00c4\b"+
+		"\f\1\2\u00c4\u00f4\3\2\2\2\u00c5\u00c6\7\17\2\2\u00c6\u00d7\7\20\2\2\u00c7"+
+		"\u00c8\5\b\5\2\u00c8\u00c9\7\33\2\2\u00c9\u00ca\b\f\1\2\u00ca\u00cb\7"+
+		"\26\2\2\u00cb\u00cc\b\f\1\2\u00cc\u00cd\t\2\2\2\u00cd\u00ce\b\f\1\2\u00ce"+
+		"\u00cf\b\f\1\2\u00cf\u00d8\3\2\2\2\u00d0\u00d1\7\33\2\2\u00d1\u00d2\b"+
+		"\f\1\2\u00d2\u00d3\3\2\2\2\u00d3\u00d4\7\26\2\2\u00d4\u00d5\b\f\1\2\u00d5"+
+		"\u00d6\t\2\2\2\u00d6\u00d8\b\f\1\2\u00d7\u00c7\3\2\2\2\u00d7\u00d0\3\2"+
+		"\2\2\u00d8\u00d9\3\2\2\2\u00d9\u00da\7\22\2\2\u00da\u00db\b\f\1\2\u00db"+
+		"\u00dc\7\33\2\2\u00dc\u00dd\b\f\1\2\u00dd\u00de\7\32\2\2\u00de\u00df\b"+
+		"\f\1\2\u00df\u00e0\t\2\2\2\u00e0\u00e1\b\f\1\2\u00e1\u00e2\7\22\2\2\u00e2"+
+		"\u00e3\b\f\1\2\u00e3\u00e4\7\33\2\2\u00e4\u00e5\b\f\1\2\u00e5\u00e6\7"+
+		"\25\2\2\u00e6\u00e7\b\f\1\2\u00e7\u00e8\7\21\2\2\u00e8\u00e9\7\30\2\2"+
+		"\u00e9\u00eb\b\f\1\2\u00ea\u00ec\5\f\7\2\u00eb\u00ea\3\2\2\2\u00ec\u00ed"+
+		"\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef"+
+		"\u00f0\7\31\2\2\u00f0\u00f1\b\f\1\2\u00f1\u00f2\b\f\1\2\u00f2\u00f4\3"+
+		"\2\2\2\u00f3\u008d\3\2\2\2\u00f3\u00a8\3\2\2\2\u00f3\u00c5\3\2\2\2\u00f4"+
+		"\27\3\2\2\2\u00f5\u00f9\5\32\16\2\u00f6\u00f7\7\35\2\2\u00f7\u00f9\b\r"+
+		"\1\2\u00f8\u00f5\3\2\2\2\u00f8\u00f6\3\2\2\2\u00f9\u0101\3\2\2\2\u00fa"+
+		"\u00fb\7\24\2\2\u00fb\u00fc\b\r\1\2\u00fc\u0100\5\32\16\2\u00fd\u00fe"+
+		"\7\35\2\2\u00fe\u0100\b\r\1\2\u00ff\u00fa\3\2\2\2\u00ff\u00fd\3\2\2\2"+
+		"\u0100\u0103\3\2\2\2\u0101\u00ff\3\2\2\2\u0101\u0102\3\2\2\2\u0102\31"+
+		"\3\2\2\2\u0103\u0101\3\2\2\2\u0104\u0105\7\33\2\2\u0105\u0113\b\16\1\2"+
+		"\u0106\u0107\7\34\2\2\u0107\u0113\b\16\1\2\u0108\u0109\7\35\2\2\u0109"+
+		"\u0113\b\16\1\2\u010a\u010b\7\37\2\2\u010b\u0113\b\16\1\2\u010c\u010d"+
+		"\7\20\2\2\u010d\u010e\b\16\1\2\u010e\u010f\5\30\r\2\u010f\u0110\7\21\2"+
+		"\2\u0110\u0111\b\16\1\2\u0111\u0113\3\2\2\2\u0112\u0104\3\2\2\2\u0112"+
+		"\u0106\3\2\2\2\u0112\u0108\3\2\2\2\u0112\u010a\3\2\2\2\u0112\u010c\3\2"+
+		"\2\2\u0113\33\3\2\2\2\27%\609?FVpz\u0084\u0089\u0099\u00a2\u00ae\u00be"+
+		"\u00d7\u00ed\u00f3\u00f8\u00ff\u0101\u0112";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
