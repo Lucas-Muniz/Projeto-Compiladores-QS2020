@@ -370,8 +370,8 @@ cmdrepeticao : 'enquanto' AP
                    	   }
                    	   
 				|
-					'para' 	AP
-							(
+					'para' 	AP {_exprDecision = "";}
+							((
 							
 								(tipo ID {_varName = _input.LT(-1).getText();
 			                              _varValue = null;
@@ -388,7 +388,13 @@ cmdrepeticao : 'enquanto' AP
 			                           
 			                            }
 	                            ATTR  { _exprDecision += _input.LT(-1).getText();}
-								(ID | NUMBER) {_exprContent =_input.LT(-1).getText(); _exprDecision +=_exprContent;  }
+								(ID  { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+									 }
+								
+								| NUMBER) {_exprContent =_input.LT(-1).getText(); _exprDecision +=_exprContent;  }
 								{
                                    	 
 					               	 atribuiVariavel(_varName);
@@ -400,24 +406,51 @@ cmdrepeticao : 'enquanto' AP
 			                            
 								) | 
 								(
-								ID    { _varName = _input.LT(-1).getText();
+								ID   { _varName = _input.LT(-1).getText();
 										if (!symbolTable.exists(_varName)){
 			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
 			                              }
 			                              else{
 			                  	            _exprDecision = _varName;
 			                              }
-								})
+									  }
+								)
 								ATTR  { _exprDecision += _input.LT(-1).getText();}
-								(ID | NUMBER) {_exprDecision +=_input.LT(-1).getText();}
-							)
+								(ID  { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+									 }
+								 | NUMBER) {_exprDecision +=_input.LT(-1).getText();}
+							))?
 							SC    { _exprDecision += _input.LT(-1).getText() + " ";}
-							ID    { _exprDecision += _input.LT(-1).getText();}
+							(
+							ID    { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+			                              else{
+			                  	            _exprDecision += _varName;
+			                              }
+								   }
 							OPREL { _exprDecision += _input.LT(-1).getText(); }
-							(ID | NUMBER) {_exprDecision +=_input.LT(-1).getText(); }
+							(ID { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                            }
+								}
+							| NUMBER) {_exprDecision +=_input.LT(-1).getText(); }
+							)?
 							SC    { _exprDecision += _input.LT(-1).getText() + " ";}
-							ID    { _exprDecision += _input.LT(-1).getText();}
+							(
+							ID    { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                            }
+								  }
+								  { _exprDecision += _input.LT(-1).getText();}
 							INC   { _exprDecision += _input.LT(-1).getText();}
+							)?
 							FP
 							ACH
 							{ curThread = new ArrayList<AbstractCommand>(); 
@@ -516,7 +549,7 @@ OP	: '+' | '-' | '*' | '/'
 	;
 	
 INC	: '++'
-	;	
+	;
 	
 ATTR : ':='
 	 ;
