@@ -546,7 +546,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	             	_attribTerm = _attribTerm.substring(1);
               	             }
               	             _exprContent += _attribTerm;
-              	             /* VerificaÃ§Ã£o de tipo*/
+              	             /* Verificação de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                             }
                
@@ -554,14 +554,13 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               TEXTO { _attribTerm = _input.LT(-1).getText();
               	      _exprContent += _attribTerm;
               	       
-              	      /* VerificaÃ§Ã£o de tipo*/
+              	      /* Verificação de tipo*/
 	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
                     }
             | '(' {_exprContent += _input.LT(-1).getText(); } 
                 expr 
                ')' { _exprContent += _input.LT(-1).getText(); }
-			;
-			
+			;			
 	
 AP	: '('
 	;
@@ -612,7 +611,11 @@ SIGNEDNUMBER : ('+' | '-') [0-9]+ ('.' [0-9]+)?
 SIGN  : ('+' | '-')
       ;
 		
-TEXTO : ('"' | 'â€œ') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( 'â€�' | '"')
+TEXTO : ('"' | '“') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( '”' | '"')
       ;
+      
+COMMENT : '/*' .*? '*/' -> skip
+        ;
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
+
