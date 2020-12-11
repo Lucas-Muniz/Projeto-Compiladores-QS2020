@@ -394,7 +394,7 @@ cmdrepeticao : 'enquanto' AP
 			                              }
 									 }
 								
-								| NUMBER) {_exprContent =_input.LT(-1).getText(); _exprDecision +=_exprContent;  }
+								| (NUMBER | SIGNEDNUMBER)) {_exprContent =_input.LT(-1).getText(); _exprDecision +=_exprContent;  }
 								{
                                    	 
 					               	 atribuiVariavel(_varName);
@@ -439,7 +439,7 @@ cmdrepeticao : 'enquanto' AP
 			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
 			                            }
 								}
-							| NUMBER) {_exprDecision +=_input.LT(-1).getText(); }
+							| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText(); }
 							)?
 							SC    { _exprDecision += _input.LT(-1).getText() + " ";}
 							(
@@ -449,7 +449,34 @@ cmdrepeticao : 'enquanto' AP
 			                            }
 								  }
 								  { _exprDecision += _input.LT(-1).getText();}
-							INC   { _exprDecision += _input.LT(-1).getText();}
+							(	OP_INC_DEC { _exprDecision += _input.LT(-1).getText();}
+							
+								| 	( 	OP_INC_DEC_EQ { _exprDecision += _input.LT(-1).getText();} 
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText();} 
+									 )
+									 
+								|	(	ATTR { _exprDecision += _input.LT(-1).getText();}
+										ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 } { _exprDecision += _varName;}
+										 OP { _exprDecision += _input.LT(-1).getText();}
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText();} 
+									  )
+									 
+							)
+							
 							)?
 							FP
 							ACH
@@ -547,10 +574,13 @@ POINT : '.'
 	
 OP	: '+' | '-' | '*' | '/'
 	;
+
+OP_INC_DEC 	: '++' | '--' 
+			;	
 	
-INC	: '++'
-	;
-	
+OP_INC_DEC_EQ	: '+=' | '-='	
+				;
+
 ATTR : ':='
 	 ;
 	 
