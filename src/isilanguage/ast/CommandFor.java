@@ -3,12 +3,16 @@ package isilanguage.ast;
 import java.util.ArrayList;
 
 public class CommandFor extends AbstractCommand {
-
+	
+	private String attrib;
 	private String condition;
+	private String step;
 	private ArrayList<AbstractCommand> commands;	
 	
-	public CommandFor(String condition, ArrayList<AbstractCommand> cmd) {
-		this.condition = condition.replace(":=", "=");
+	public CommandFor(String attrib,  String condition, String step,  ArrayList<AbstractCommand> cmd) {
+		this.attrib = attrib.replace(":=", "=");
+		this.condition = condition;
+		this.step = step.replace(":=", "=");
 		this.commands = cmd;
 	}
 	
@@ -28,7 +32,7 @@ public class CommandFor extends AbstractCommand {
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);
 		StringBuilder str = new StringBuilder();
-		str.append(space+"for ("+ condition + ") {\n");
+		str.append(space+"for ("+ attrib + "; " + condition + "; " + step + ") {\n");
 		for (AbstractCommand cmd: commands) {
 			str.append(cmd.generateJavaCode(space.length()+numSpace)+"\n");
 		}
@@ -37,7 +41,7 @@ public class CommandFor extends AbstractCommand {
 	}
 	
 	public String toString() {
-		return "CommandFor [condition = " + condition + ", commands = " + commands + "]";
+		return "CommandFor [attrib = " + attrib + ", condition = " + condition + ", step = " + step +  ", commands = " + commands + "]";
 	}
 
 }
