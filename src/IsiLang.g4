@@ -303,24 +303,22 @@ cmdrepeticao : 'enquanto' AP
                    		  ID    {  op = null;
                                    type = -1;
                                    _exprDecision = _input.LT(-1).getText();
+                                   _varName = _input.LT(-1).getText();
                                    useVariavel(_input.LT(-1).getText());
                                    _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText();
+                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
                                    op = _input.LT(-1).getText();
                                    if (op != null && !IsiOperator.isRelationalOperator(op)){
                             	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
                                    } 
                                   }
-                           (ID   { useVariavel(_input.LT(-1).getText());
-                                   type = obtemTipoId(_input.LT(-1).getText()); }
-                           | NUMBER  { type = IsiTypes.NUMBER;}
-                           
-                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                           )              { _exprDecision += _input.LT(-1).getText(); 
-                                            _attribTerm = _input.LT(-1).getText();
-                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                            _term = null;
-                                            op = null;  }
+                           expr				
+							{
+								_exprDecision += _exprContent;
+								 verificaTipoAtribuicao(_varName, _term);
+				               	 _term = null;
+				               	 op = null;
+				            }	
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -350,23 +348,22 @@ cmdrepeticao : 'enquanto' AP
                    		   ID    { op = null;
                                    type = -1;
                                    _exprDecision = _input.LT(-1).getText();
+                                   _varName = _input.LT(-1).getText();
                                    useVariavel(_input.LT(-1).getText());
                                    _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText();
+                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
                                    op = _input.LT(-1).getText();
                                    if (op != null && !IsiOperator.isRelationalOperator(op)){
                             	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
                                    }  
                                   }
-                           (ID   { useVariavel(_input.LT(-1).getText());
-                                   type = obtemTipoId(_input.LT(-1).getText());}
-                           | NUMBER  { type = IsiTypes.NUMBER;}
-                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                            )             { _exprDecision += _input.LT(-1).getText(); 
-                                            _attribTerm = _input.LT(-1).getText();
-                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                            _term = null;
-                                            op = null;}
+                           expr				
+							{
+								_exprDecision += _exprContent;
+								 verificaTipoAtribuicao(_varName, _term);
+				               	 _term = null;
+				               	 op = null;
+				            }	
                     	   FP
                     	   POINT
                        {
@@ -378,12 +375,14 @@ cmdrepeticao : 'enquanto' AP
 				'para' 	  AP {_exprAttrib = "";}
 						  (
 							(
-							(tipo ID {_varName = _input.LT(-1).getText();
-			                          _varValue = null;
+							(tipo ID {	
+										_varName = _input.LT(-1).getText();
+			                          	_varValue = null;
 			                              symbol = new IsiVariable(_varName, _tipo, _varValue);
 			                              
 			                              if (!symbolTable.exists(_varName)){
-			                                symbolTable.add(symbol);	
+			                                symbolTable.add(symbol);
+			                                	
 			                                _exprAttrib = _varName;
 			                              }
 			                              else{
@@ -392,60 +391,64 @@ cmdrepeticao : 'enquanto' AP
 			                              
 			                           
 			                            }
-	                            ATTR  { _exprAttrib += _input.LT(-1).getText();}
-								(ID  { _varName = _input.LT(-1).getText();
-										if (!symbolTable.exists(_varName)){
-			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                              }
-									 }
-								
-								| (NUMBER | SIGNEDNUMBER)) {_exprContent =_input.LT(-1).getText(); _exprAttrib +=_exprContent;  }
-								
+	                            ATTR  { _exprAttrib += "=";_exprContent = "";}
+													
+								expr				
 								{
-                                   	 
+									_exprAttrib += _exprContent;
 					               	 atribuiVariavel(_varName);
-
-					               	 
+									 verificaTipoAtribuicao(_varName, _term);
 					               	 _term = null;
 					               	 op = null;
 					            }
-			                            
+						        
+								
+								
 								) | 
 								(
-							ID   { _varName = _input.LT(-1).getText();
-									if (!symbolTable.exists(_varName)){
-			                             throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                        }
-			                        else{
-			                            _exprAttrib = _varName;
-			                        }
-							     }
-							)
-							ATTR  { _exprAttrib += _input.LT(-1).getText();}
-							(ID  { _varName = _input.LT(-1).getText();
-									if (!symbolTable.exists(_varName)){
-			                            throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                        }
-								 }
-							| NUMBER) {_exprAttrib +=_input.LT(-1).getText();}
-							))?
+									ID   {  verificaID(_input.LT(-1).getText());
+											_varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+					                             throw new IsiSemanticException("Symbol "+_varName+" not declared");
+					                        }
+					                        else{
+					                            _exprAttrib = _varName;
+					                        }
+									     }
+									)
+									ATTR  { _exprAttrib += _input.LT(-1).getText(); _exprContent = "";}
+									expr 
+					                {
+					                 _exprAttrib +=_exprContent;
+					               	 CommandAtribuicao cmd = new CommandAtribuicao(_varName, _exprContent);
+					               	 atribuiVariavel(_varName);
+					               	 stack.peek().add(cmd);
+					               	 verificaTipoAtribuicao(_varName, _term);
+					               	 _term = null;
+					               	 op = null;
+					                })
+							
+							)?
 							POINT {_exprDecision = "";}
 							(     
-							ID    { _varName = _input.LT(-1).getText();
-										if (!symbolTable.exists(_varName)){
-			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                              }
-			                              else{
-			                  	            _exprDecision += _varName;
-			                              }
-								   }
-							OPREL { _exprDecision += _input.LT(-1).getText(); }
-							(ID { _varName = _input.LT(-1).getText();
-										if (!symbolTable.exists(_varName)){
-			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                            }
-								}
-							| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText(); }
+								ID    { op = null;
+	                                   type = -1;
+	                                   _exprDecision = _input.LT(-1).getText();
+	                                   useVariavel(_input.LT(-1).getText());
+	                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
+	                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
+	                                   op = _input.LT(-1).getText();
+	                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
+	                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+	                                   }  
+	                                  }
+	                           expr				
+								{
+									_exprDecision += _exprContent;
+									 verificaTipoAtribuicao(_varName, _term);
+					               	 _term = null;
+					               	 op = null;
+					            }
 							)?  { _exprStep = "";}
 							POINT   
 							(
@@ -457,30 +460,25 @@ cmdrepeticao : 'enquanto' AP
 								  { _exprStep += _input.LT(-1).getText();}
 							(	OP_INC_DEC { _exprStep += _input.LT(-1).getText();}
 							
-								| 	( 	OP_INC_DEC_EQ { _exprStep += _input.LT(-1).getText();} 
-										(ID  { _varName = _input.LT(-1).getText();
-											if (!symbolTable.exists(_varName)){
-				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-				                              }
-										 }
-									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
+								| 	( 	OP_INC_DEC_EQ { _exprStep += _input.LT(-1).getText(); _exprContent = "";} 
+										expr				
+										{
+											_exprStep += _exprContent;
+											 verificaTipoAtribuicao(_varName, _term);
+							               	 _term = null;
+							               	 op = null;
+							            }	
 									 )
 									 
-								|	(	ATTR { _exprStep += _input.LT(-1).getText();}
-										ID  { _varName = _input.LT(-1).getText();
-											if (!symbolTable.exists(_varName)){
-				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-				                              }
-										 } { _exprStep += _varName;}
-										 OP { _exprStep += _input.LT(-1).getText();}
-										(ID  { _varName = _input.LT(-1).getText();
-											if (!symbolTable.exists(_varName)){
-				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-				                              }
-										 }
-									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
+								|	(	ATTR { _exprStep += _input.LT(-1).getText(); _exprContent = "";}
+										expr				
+										{
+											_exprStep += _exprContent;
+											 verificaTipoAtribuicao(_varName, _term);
+							               	 _term = null;
+							               	 op = null;
+							            }	
 									  )
-									 
 							)
 							
 							)?
