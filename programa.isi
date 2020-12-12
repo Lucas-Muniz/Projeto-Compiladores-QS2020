@@ -2,6 +2,9 @@ programa
   declare numero a,b,c,d, f.
   declare texto t.
   
+  
+   
+     
   escreva("Programa Teste").
   escreva ("Digite A").
   leia (a).
@@ -46,7 +49,7 @@ programa
   escreva ("D e igual a ").
   escreva (d).
   
-  enquanto (a < b){
+  enquanto (a+1 < 5){
   	 leia (a).
      escreva(a).
      escreva("TESTE 1").
@@ -56,7 +59,8 @@ programa
   /* comentario de 
   		varias linhas  */
   		
-  para(numero i := 0.2.  i < 5. i := i + 1){
+ 
+  para(numero i := 1 + a.  i < a + 15. i := a + 1){
   	escreva(a).
   	escreva(i).
   }
