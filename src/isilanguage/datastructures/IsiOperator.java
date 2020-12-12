@@ -48,8 +48,10 @@ public class IsiOperator implements IsiTypes {
 			throw new IsiSemanticException("'"+term+"' is numeric type, but '"+op+"' is not a numeric operator.");
 		} else if (termType == IsiTypes.TEXT && !isTextualOperator(op)) {
 			throw new IsiSemanticException("'"+term+"' is text type, but '"+op+"' is not a textual operator.");
+		} else if (termType == IsiTypes.BOOLEAN && !isBooleanOperator(op) && !isRelationalOperator(op)) {
+			throw new IsiSemanticException("'"+term+"' is boolean type, but '"+op+"' is not a boolean operator.");
 		}
-		return true;
-			
+		return true;	
 	}
+	
 }

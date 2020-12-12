@@ -7,6 +7,11 @@ package isilanguage.parser;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
+	import isilanguage.datastructures.AbstractExpression;
+	import isilanguage.datastructures.NumericExpressionBuilder;
+	import isilanguage.datastructures.TextualExpressionBuilder;
+	import isilanguage.datastructures.RelationalExpressionBuilder;
+	import isilanguage.datastructures.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -158,6 +163,66 @@ public interface IsiLangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTermo(IsiLangParser.TermoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#condicao}.
+	 * @param ctx the parse tree
+	 */
+	void enterCondicao(IsiLangParser.CondicaoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#condicao}.
+	 * @param ctx the parse tree
+	 */
+	void exitCondicao(IsiLangParser.CondicaoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#exprbooleana}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprbooleana(IsiLangParser.ExprbooleanaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#exprbooleana}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprbooleana(IsiLangParser.ExprbooleanaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#booleano}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleano(IsiLangParser.BooleanoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#booleano}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleano(IsiLangParser.BooleanoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#relacao}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelacao(IsiLangParser.RelacaoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#relacao}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelacao(IsiLangParser.RelacaoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#operacao}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperacao(IsiLangParser.OperacaoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#operacao}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperacao(IsiLangParser.OperacaoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#termonumerico}.
+	 * @param ctx the parse tree
+	 */
+	void enterTermonumerico(IsiLangParser.TermonumericoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#termonumerico}.
+	 * @param ctx the parse tree
+	 */
+	void exitTermonumerico(IsiLangParser.TermonumericoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link IsiLangParser#comentarios}.
 	 * @param ctx the parse tree

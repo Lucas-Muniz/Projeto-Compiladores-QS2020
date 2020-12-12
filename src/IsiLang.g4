@@ -7,6 +7,11 @@ grammar IsiLang;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
+	import isilanguage.datastructures.AbstractExpression;
+	import isilanguage.datastructures.NumericExpressionBuilder;
+	import isilanguage.datastructures.TextualExpressionBuilder;
+	import isilanguage.datastructures.RelationalExpressionBuilder;
+	import isilanguage.datastructures.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -49,6 +54,9 @@ grammar IsiLang;
 	private ArrayList<AbstractCommand> listaTrue;
 	private ArrayList<AbstractCommand> listaFalse;
 	private ArrayList<AbstractCommand> commands;
+	private AbstractExpression _expr;
+	private int _exprType;
+	private String bool, _booleanExpr, _partialBooleanExpr, _condition;
 	
 	public void verificaID(String id){
 		if (!symbolTable.exists(id)){
@@ -180,6 +188,7 @@ declaravar :  'declare' tipo ID  {
            
 tipo       : 'numero' { _tipo = IsiVariable.NUMBER;  }
            | 'texto'  { _tipo = IsiVariable.TEXT;  }
+           | 'booleano' { _tipo = IsiVariable.BOOLEAN;  }
            ;
         
 bloco	: { curThread = new ArrayList<AbstractCommand>(); 
@@ -230,15 +239,29 @@ cmdescrita	: 'escreva'
 			
 cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                     _exprID = _input.LT(-1).getText();
+                    
+                    _exprType = obtemTipoId(_exprID);
+                    
+                    if(_exprType == IsiTypes.NUMBER){
+                    	_expr = new NumericExpressionBuilder();
+                    } else if (_exprType == IsiTypes.BOOLEAN){
+                    	_expr = new BooleanExpressionBuilder();
+                    } else if (_exprType == IsiTypes.TEXT){
+                    	_expr = new TextualExpressionBuilder();
+                    }
+                    
                    } 
                ATTR { _exprContent = ""; } 
-               expr 
+               (expr
+               | condicao {_exprContent = _condition;}
+               )
                POINT
-               {
+               { 
+                 //_exprContent = _expr.getExpression();
                	 CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
                	 atribuiVariavel(_exprID);
                	 stack.peek().add(cmd);
-               	 verificaTipoAtribuicao(_exprID, _term);
+               	 //verificaTipoAtribuicao(_exprID, _term);
                	 _term = null;
                	 op = null;
                }
@@ -246,26 +269,7 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { op = null;
-                            type = -1;
-                            _exprDecision = _input.LT(-1).getText();
-                            useVariavel(_input.LT(-1).getText());
-                            _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                    OPREL { _exprDecision += _input.LT(-1).getText();
-                            op = _input.LT(-1).getText();
-                            if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                            }
-                           }
-                    (ID   { useVariavel(_input.LT(-1).getText());
-                            type = obtemTipoId(_input.LT(-1).getText());}
-                    | NUMBER  { type = IsiTypes.NUMBER;}
-                    | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                    )              { _exprDecision += _input.LT(-1).getText(); 
-                                     _attribTerm = _input.LT(-1).getText();
-                                     _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                     _term = null;
-                                     op = null;}
+                    condicao {_exprDecision = _condition;}
                     FP 
                     'entao'
                     ACH 
@@ -300,25 +304,8 @@ cmdselecao  :  'se' AP
             ; 
             
 cmdrepeticao : 'enquanto' AP
-                   		  ID    {  op = null;
-                                   type = -1;
-                                   _exprDecision = _input.LT(-1).getText();
-                                   _varName = _input.LT(-1).getText();
-                                   useVariavel(_input.LT(-1).getText());
-                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
-                                   op = _input.LT(-1).getText();
-                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                                   } 
-                                  }
-                           expr				
-							{
-								_exprDecision += _exprContent;
-								 verificaTipoAtribuicao(_varName, _term);
-				               	 _term = null;
-				               	 op = null;
-				            }	
+                   		  condicao {_exprDecision = _condition;
+                   		            System.out.println(_exprDecision);}
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -345,25 +332,7 @@ cmdrepeticao : 'enquanto' AP
                          	commands = stack.pop();	
                        	  } 
                 'enquanto' AP
-                   		   ID    { op = null;
-                                   type = -1;
-                                   _exprDecision = _input.LT(-1).getText();
-                                   _varName = _input.LT(-1).getText();
-                                   useVariavel(_input.LT(-1).getText());
-                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
-                                   op = _input.LT(-1).getText();
-                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                                   }  
-                                  }
-                           expr				
-							{
-								_exprDecision += _exprContent;
-								 verificaTipoAtribuicao(_varName, _term);
-				               	 _term = null;
-				               	 op = null;
-				            }	
+                   		   condicao {_exprDecision = _condition;}
                     	   FP
                     	   POINT
                        {
@@ -375,14 +344,12 @@ cmdrepeticao : 'enquanto' AP
 				'para' 	  AP {_exprAttrib = "";}
 						  (
 							(
-							(tipo ID {	
-										_varName = _input.LT(-1).getText();
-			                          	_varValue = null;
+							(tipo ID {_varName = _input.LT(-1).getText();
+			                          _varValue = null;
 			                              symbol = new IsiVariable(_varName, _tipo, _varValue);
 			                              
 			                              if (!symbolTable.exists(_varName)){
-			                                symbolTable.add(symbol);
-			                                	
+			                                symbolTable.add(symbol);	
 			                                _exprAttrib = _varName;
 			                              }
 			                              else{
@@ -391,64 +358,60 @@ cmdrepeticao : 'enquanto' AP
 			                              
 			                           
 			                            }
-	                            ATTR  { _exprAttrib += "=";_exprContent = "";}
-													
-								expr				
+	                            ATTR  { _exprAttrib += _input.LT(-1).getText();}
+								(ID  { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+									 }
+								
+								| (NUMBER | SIGNEDNUMBER)) {_exprContent =_input.LT(-1).getText(); _exprAttrib +=_exprContent;  }
+								
 								{
-									_exprAttrib += _exprContent;
+                                   	 
 					               	 atribuiVariavel(_varName);
-									 verificaTipoAtribuicao(_varName, _term);
+
+					               	 
 					               	 _term = null;
 					               	 op = null;
 					            }
-						        
-								
-								
+			                            
 								) | 
 								(
-									ID   {  verificaID(_input.LT(-1).getText());
-											_varName = _input.LT(-1).getText();
-											if (!symbolTable.exists(_varName)){
-					                             throw new IsiSemanticException("Symbol "+_varName+" not declared");
-					                        }
-					                        else{
-					                            _exprAttrib = _varName;
-					                        }
-									     }
-									)
-									ATTR  { _exprAttrib += _input.LT(-1).getText(); _exprContent = "";}
-									expr 
-					                {
-					                 _exprAttrib +=_exprContent;
-					               	 CommandAtribuicao cmd = new CommandAtribuicao(_varName, _exprContent);
-					               	 atribuiVariavel(_varName);
-					               	 stack.peek().add(cmd);
-					               	 verificaTipoAtribuicao(_varName, _term);
-					               	 _term = null;
-					               	 op = null;
-					                })
-							
-							)?
+							ID   { _varName = _input.LT(-1).getText();
+									if (!symbolTable.exists(_varName)){
+			                             throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                        }
+			                        else{
+			                            _exprAttrib = _varName;
+			                        }
+							     }
+							)
+							ATTR  { _exprAttrib += _input.LT(-1).getText();}
+							(ID  { _varName = _input.LT(-1).getText();
+									if (!symbolTable.exists(_varName)){
+			                            throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                        }
+								 }
+							| NUMBER) {_exprAttrib +=_input.LT(-1).getText();}
+							))?
 							POINT {_exprDecision = "";}
 							(     
-								ID    { op = null;
-	                                   type = -1;
-	                                   _exprDecision = _input.LT(-1).getText();
-	                                   useVariavel(_input.LT(-1).getText());
-	                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-	                           OPREL { _exprDecision += _input.LT(-1).getText(); _exprContent = "";
-	                                   op = _input.LT(-1).getText();
-	                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
-	                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-	                                   }  
-	                                  }
-	                           expr				
-								{
-									_exprDecision += _exprContent;
-									 verificaTipoAtribuicao(_varName, _term);
-					               	 _term = null;
-					               	 op = null;
-					            }
+							ID    { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+			                              else{
+			                  	            _exprDecision += _varName;
+			                              }
+								   }
+							OPREL { _exprDecision += _input.LT(-1).getText(); }
+							(ID { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                            }
+								}
+							| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText(); }
 							)?  { _exprStep = "";}
 							POINT   
 							(
@@ -460,25 +423,30 @@ cmdrepeticao : 'enquanto' AP
 								  { _exprStep += _input.LT(-1).getText();}
 							(	OP_INC_DEC { _exprStep += _input.LT(-1).getText();}
 							
-								| 	( 	OP_INC_DEC_EQ { _exprStep += _input.LT(-1).getText(); _exprContent = "";} 
-										expr				
-										{
-											_exprStep += _exprContent;
-											 verificaTipoAtribuicao(_varName, _term);
-							               	 _term = null;
-							               	 op = null;
-							            }	
+								| 	( 	OP_INC_DEC_EQ { _exprStep += _input.LT(-1).getText();} 
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
 									 )
 									 
-								|	(	ATTR { _exprStep += _input.LT(-1).getText(); _exprContent = "";}
-										expr				
-										{
-											_exprStep += _exprContent;
-											 verificaTipoAtribuicao(_varName, _term);
-							               	 _term = null;
-							               	 op = null;
-							            }	
+								|	(	ATTR { _exprStep += _input.LT(-1).getText();}
+										ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 } { _exprStep += _varName;}
+										 OP { _exprStep += _input.LT(-1).getText();}
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
 									  )
+									 
 							)
 							
 							)?
@@ -507,10 +475,13 @@ expr		:  (termo
               	       
               	                 /* Verificação de tipo*/
 	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	             
+	               	             _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                                }) 
                                
                ( (OP  { op = _input.LT(-1).getText();
-	                    _exprContent += op;}
+	                    _exprContent += op;
+	                    _expr.addOperator(op);}
 	           termo)
 	            
 	           | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
@@ -519,6 +490,7 @@ expr		:  (termo
               	       
               	                /* VerificaÃ§Ã£o de tipo*/
 	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	            _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                               }
 	           )*
 			;
@@ -531,15 +503,19 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
 	               verificaAtribuicao(_attribTerm);
 	               
 	               /* VerificaÃ§Ã£o de tipo*/
-	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	               //_term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	               
+	               _expr.addElement(_attribTerm, obtemTipoId(_attribTerm));
 	               
                  } 
             | 
               NUMBER { _attribTerm = _input.LT(-1).getText();
               	       _exprContent += _attribTerm;
               	       
-              	       /* VerificaÃ§Ã£o de tipo*/
+              	       /* Verificacao de tipo*/
 	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	   
+	               	   _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                       }
             | 
               SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
@@ -549,6 +525,8 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	             _exprContent += _attribTerm;
               	             /* Verificação de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               		     
+	               		     _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                             }
                
             | 
@@ -557,12 +535,171 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	       
               	      /* Verificação de tipo*/
 	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
+	               	  
+	               	  _expr.addElement(_attribTerm, IsiTypes.TEXT);
                     }
-            | '(' {_exprContent += _input.LT(-1).getText(); } 
+            | '(' {_exprContent += _input.LT(-1).getText();
+                   _expr.openParentheses(); } 
                 expr 
-               ')' { _exprContent += _input.LT(-1).getText(); }
+               ')' { _exprContent += _input.LT(-1).getText();
+                     _expr.closeParentheses(); }
 			;			
-	
+			
+			
+			
+condicao : { _booleanExpr = "";
+             _expr = new BooleanExpressionBuilder();
+            }
+           exprbooleana 
+           
+           { 
+             //_condition =_booleanExpr;
+             _condition = _expr.getExpression();
+             _booleanExpr = ""; 
+           }
+         ;
+			
+exprbooleana  :                   
+                 booleano         
+                 (BOOLEANOBINARIO { 
+                                   bool = _input.LT(-1).getText();
+                                   if (bool.contentEquals("ou")){
+                   		           		_booleanExpr +=  " || ";
+                   		           		bool = "||";
+                                   } else if (bool.contentEquals("e")) {
+                   		           		_booleanExpr +=  " && ";
+                   		           		bool = "&&";
+                                   } else {
+                                      throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                                   } 
+                                   _expr.addOperator(bool);
+                                   }
+                                   
+                 booleano         
+                 )* 
+              ;   
+          
+booleano :                  { _partialBooleanExpr = ""; }
+            (BOOLEANOUNARIO { 
+                             bool = _input.LT(-1).getText();
+                             if (bool.contentEquals("nao")){
+                   		      	_booleanExpr +=  "!";
+                   		      	bool = "!";
+                   			 } else {
+                                throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                             }
+                             _expr.addOperator(bool);
+                            }
+                            
+            )?  
+            '('             { 
+                             _booleanExpr += _input.LT(-1).getText();
+                             _expr.openParentheses();
+                            }
+            exprbooleana    
+            ')'             { _booleanExpr +=  _input.LT(-1).getText();
+                              _exprContent = "";
+                              _partialBooleanExpr = ""; 
+                              _expr.closeParentheses();
+                            }
+            |             { _term = null;}
+            relacao       {   
+                              //_booleanTerm = new IsiTerm(_term.getContent(), IsiTypes.BOOLEAN);
+                              //_booleanExpr +=  _term.getContent();
+                              op = null;
+                              _exprContent = "";
+                            }
+                            
+           |
+           BOOL   {
+                   bool = _input.LT(-1).getText();
+                   if (bool.contentEquals("verdadeiro")){
+                   		_booleanExpr +=  "true";
+                   		bool = "true";
+                   } else if (bool.contentEquals("falso")) {
+                   		_booleanExpr +=  "false";
+                   		bool = "false";
+                   } else {
+                       throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                   }
+                   _expr.addElement(bool, IsiTypes.BOOLEAN);
+                  }  
+          
+          | expr
+                  
+              
+         ; 
+         
+relacao :  expr  
+           OPREL         { _exprContent += " "+ _input.LT(-1).getText()+" ";
+                           op = _input.LT(-1).getText();
+                           if (op != null && !IsiOperator.isRelationalOperator(op)){
+                                throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+                           }
+                           _expr.addOperator(op);
+                         }
+           expr
+        ;
+        
+operacao : '('            { _booleanExpr +=  _input.LT(-1).getText();
+                            _expr.openParentheses();}
+            termonumerico
+            OP            { _exprContent += _input.LT(-1).getText();
+                           op = _input.LT(-1).getText();
+                           if (op != null && !IsiOperator.isNumericOperator(op)){
+                                throw new IsiSemanticException("Expecting a numeric operator, but got '"+op+"'");
+                           }
+                           _expr.addOperator(op);
+                         }
+            termonumerico
+            ')'           { _booleanExpr +=  _input.LT(-1).getText();
+                            _expr.closeParentheses();}
+         ;
+        
+termonumerico :  (ID { _attribTerm = _input.LT(-1).getText();
+                       verificaID(_attribTerm);
+	                   _exprContent += _attribTerm;
+	                   useVariavel(_attribTerm);
+	                   /* Verifica se uma variável usada foi atribui­da */
+	                   verificaAtribuicao(_attribTerm);
+	               
+	                   /* Verificacao de tipo*/
+	                   _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	                   
+	                   _expr.addElement(_attribTerm, obtemTipoId(_attribTerm) );
+	               
+                      }
+                 
+                 | NUMBER { _attribTerm = _input.LT(-1).getText();
+              	            _exprContent += _attribTerm;
+              	       
+              	           /* VerificaÃ§Ã£o de tipo*/
+	               	       _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	       
+	               	       _expr.addElement(_attribTerm, IsiTypes.NUMBER);
+                          }
+           
+                 | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	                  _exprContent += _attribTerm;
+              	                   /* Verificacao de tipo*/
+	               		          _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               		          
+	               		          _expr.addElement(_attribTerm, IsiTypes.NUMBER);
+                                }
+           
+                 )
+              ;
+
+			
+BOOLEANOUNARIO : 'nao'
+               ;
+              
+BOOLEANOBINARIO : 'ou' | 'e'
+               ;
+               
+BOOL  : 'verdadeiro' | 'falso'
+      ;
+
 AP	: '('
 	;
 	

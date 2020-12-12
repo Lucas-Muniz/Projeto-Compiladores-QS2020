@@ -59,9 +59,10 @@ public class IsiVariable extends IsiSymbol implements IsiTypes{
        String str;
        if (type == NUMBER) {
     	   str = "double ";
-       }
-       else {
+       } else if (type == TEXT){
     	   str = "String ";
+       } else {
+    	   str = "boolean ";
        }
        return str + " "+super.name+";";
 	}

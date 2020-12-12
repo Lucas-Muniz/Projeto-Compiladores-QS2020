@@ -7,6 +7,11 @@ package isilanguage.parser;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
+	import isilanguage.datastructures.AbstractExpression;
+	import isilanguage.datastructures.NumericExpressionBuilder;
+	import isilanguage.datastructures.TextualExpressionBuilder;
+	import isilanguage.datastructures.RelationalExpressionBuilder;
+	import isilanguage.datastructures.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -188,6 +193,78 @@ public class IsiLangBaseListener implements IsiLangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTermo(IsiLangParser.TermoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCondicao(IsiLangParser.CondicaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCondicao(IsiLangParser.CondicaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterExprbooleana(IsiLangParser.ExprbooleanaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitExprbooleana(IsiLangParser.ExprbooleanaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBooleano(IsiLangParser.BooleanoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBooleano(IsiLangParser.BooleanoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRelacao(IsiLangParser.RelacaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelacao(IsiLangParser.RelacaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOperacao(IsiLangParser.OperacaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOperacao(IsiLangParser.OperacaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTermonumerico(IsiLangParser.TermonumericoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTermonumerico(IsiLangParser.TermonumericoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

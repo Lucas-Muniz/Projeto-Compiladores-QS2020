@@ -7,6 +7,11 @@ grammar IsiLang;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
+	import isilanguage.datastructures.AbstractExpression;
+	import isilanguage.datastructures.NumericExpressionBuilder;
+	import isilanguage.datastructures.TextualExpressionBuilder;
+	import isilanguage.datastructures.RelationalExpressionBuilder;
+	import isilanguage.datastructures.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -49,6 +54,9 @@ grammar IsiLang;
 	private ArrayList<AbstractCommand> listaTrue;
 	private ArrayList<AbstractCommand> listaFalse;
 	private ArrayList<AbstractCommand> commands;
+	private AbstractExpression _expr;
+	private int _exprType;
+	private String bool, _booleanExpr, _partialBooleanExpr, _condition;
 	
 	public void verificaID(String id){
 		if (!symbolTable.exists(id)){
@@ -108,7 +116,7 @@ grammar IsiLang;
 	}
 	
 	public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-		 /* VerificaÃ§Ã£o de tipo*/
+		 /* Verificação de tipo*/
 	     if (_term == null){
 	     	return  new IsiTerm(termo, tipo);
 	     } else {
@@ -180,6 +188,7 @@ declaravar :  'declare' tipo ID  {
            
 tipo       : 'numero' { _tipo = IsiVariable.NUMBER;  }
            | 'texto'  { _tipo = IsiVariable.TEXT;  }
+           | 'booleano' { _tipo = IsiVariable.BOOLEAN;  }
            ;
         
 bloco	: { curThread = new ArrayList<AbstractCommand>(); 
@@ -194,7 +203,7 @@ cmd		:  cmdleitura
  		|  cmdattrib
  		|  cmdselecao  
  		|  cmdrepeticao
- 		| comentarios
+ 		|  comentarios
 		;
 		
 cmdleitura	: 'leia' AP
@@ -230,15 +239,29 @@ cmdescrita	: 'escreva'
 			
 cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
                     _exprID = _input.LT(-1).getText();
+                    
+                    _exprType = obtemTipoId(_exprID);
+                    
+                    if(_exprType == IsiTypes.NUMBER){
+                    	_expr = new NumericExpressionBuilder();
+                    } else if (_exprType == IsiTypes.BOOLEAN){
+                    	_expr = new BooleanExpressionBuilder();
+                    } else if (_exprType == IsiTypes.TEXT){
+                    	_expr = new TextualExpressionBuilder();
+                    }
+                    
                    } 
                ATTR { _exprContent = ""; } 
-               expr 
+               (expr
+               | condicao {_exprContent = _condition;}
+               )
                POINT
-               {
+               { 
+                 //_exprContent = _expr.getExpression();
                	 CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
                	 atribuiVariavel(_exprID);
                	 stack.peek().add(cmd);
-               	 verificaTipoAtribuicao(_exprID, _term);
+               	 //verificaTipoAtribuicao(_exprID, _term);
                	 _term = null;
                	 op = null;
                }
@@ -246,26 +269,7 @@ cmdattrib	:  ID { verificaID(_input.LT(-1).getText());
 			
 			
 cmdselecao  :  'se' AP
-                    ID    { op = null;
-                            type = -1;
-                            _exprDecision = _input.LT(-1).getText();
-                            useVariavel(_input.LT(-1).getText());
-                            _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                    OPREL { _exprDecision += _input.LT(-1).getText();
-                            op = _input.LT(-1).getText();
-                            if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                            }
-                           }
-                    (ID   { useVariavel(_input.LT(-1).getText());
-                            type = obtemTipoId(_input.LT(-1).getText());}
-                    | NUMBER  { type = IsiTypes.NUMBER;}
-                    | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                    )              { _exprDecision += _input.LT(-1).getText(); 
-                                     _attribTerm = _input.LT(-1).getText();
-                                     _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                     _term = null;
-                                     op = null;}
+                    condicao {_exprDecision = _condition;}
                     FP 
                     'entao'
                     ACH 
@@ -300,27 +304,8 @@ cmdselecao  :  'se' AP
             ; 
             
 cmdrepeticao : 'enquanto' AP
-                   		  ID    {  op = null;
-                                   type = -1;
-                                   _exprDecision = _input.LT(-1).getText();
-                                   useVariavel(_input.LT(-1).getText());
-                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText();
-                                   op = _input.LT(-1).getText();
-                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                                   } 
-                                  }
-                           (ID   { useVariavel(_input.LT(-1).getText());
-                                   type = obtemTipoId(_input.LT(-1).getText()); }
-                           | NUMBER  { type = IsiTypes.NUMBER;}
-                           
-                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                           )              { _exprDecision += _input.LT(-1).getText(); 
-                                            _attribTerm = _input.LT(-1).getText();
-                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                            _term = null;
-                                            op = null;  }
+                   		  condicao {_exprDecision = _condition;
+                   		            System.out.println(_exprDecision);}
                     	  FP 
                           ACH
                           { curThread = new ArrayList<AbstractCommand>(); 
@@ -347,26 +332,7 @@ cmdrepeticao : 'enquanto' AP
                          	commands = stack.pop();	
                        	  } 
                 'enquanto' AP
-                   		   ID    { op = null;
-                                   type = -1;
-                                   _exprDecision = _input.LT(-1).getText();
-                                   useVariavel(_input.LT(-1).getText());
-                                   _term = atualizaTipoTermo(_exprDecision, _term, obtemTipoId(_exprDecision), op); }
-                           OPREL { _exprDecision += _input.LT(-1).getText();
-                                   op = _input.LT(-1).getText();
-                                   if (op != null && !IsiOperator.isRelationalOperator(op)){
-                            	     throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
-                                   }  
-                                  }
-                           (ID   { useVariavel(_input.LT(-1).getText());
-                                   type = obtemTipoId(_input.LT(-1).getText());}
-                           | NUMBER  { type = IsiTypes.NUMBER;}
-                           | SIGNEDNUMBER { type = IsiTypes.NUMBER;}
-                            )             { _exprDecision += _input.LT(-1).getText(); 
-                                            _attribTerm = _input.LT(-1).getText();
-                                            _term = atualizaTipoTermo(_attribTerm, _term, type, op);
-                                            _term = null;
-                                            op = null;}
+                   		   condicao {_exprDecision = _condition;}
                     	   FP
                     	   POINT
                        {
@@ -507,20 +473,24 @@ expr		:  (termo
                | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
               	       
-              	                 /* VerificaÃ§Ã£o de tipo*/
+              	                 /* Verificação de tipo*/
 	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	             
+	               	             _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                                }) 
                                
                ( (OP  { op = _input.LT(-1).getText();
-	                    _exprContent += op;}
+	                    _exprContent += op;
+	                    _expr.addOperator(op);}
 	           termo)
 	            
 	           | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
               	                op = "+";
               	       
-              	                /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
+              	                /* VerificaÃ§Ã£o de tipo*/
 	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	            _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                               }
 	           )*
 			;
@@ -529,19 +499,23 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
                    verificaID(_attribTerm);
 	               _exprContent += _attribTerm;
 	               useVariavel(_attribTerm);
-	               /* Verifica se uma variÃƒÂ¡vel usada foi atribuÃƒÂ­da */
+	               /* Verifica se uma variÃ¡vel usada foi atribuÃ­da */
 	               verificaAtribuicao(_attribTerm);
 	               
-	               /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
-	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	               /* VerificaÃ§Ã£o de tipo*/
+	               //_term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	               
+	               _expr.addElement(_attribTerm, obtemTipoId(_attribTerm));
 	               
                  } 
             | 
               NUMBER { _attribTerm = _input.LT(-1).getText();
               	       _exprContent += _attribTerm;
               	       
-              	       /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
+              	       /* Verificacao de tipo*/
 	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	   
+	               	   _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                       }
             | 
               SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
@@ -549,40 +523,183 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	             	_attribTerm = _attribTerm.substring(1);
               	             }
               	             _exprContent += _attribTerm;
-              	             /* VerificaÃ§Ã£o de tipo*/
+              	             /* Verificação de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               		     
+	               		     _expr.addElement(_attribTerm, IsiTypes.NUMBER);
                             }
                
             | 
               TEXTO { _attribTerm = _input.LT(-1).getText();
               	      _exprContent += _attribTerm;
               	       
-              	      /* VerificaÃ§Ã£o de tipo*/
+              	      /* Verificação de tipo*/
 	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
+	               	  
+	               	  _expr.addElement(_attribTerm, IsiTypes.TEXT);
                     }
-            | '(' {_exprContent += _input.LT(-1).getText(); } 
+            | '(' {_exprContent += _input.LT(-1).getText();
+                   _expr.openParentheses(); } 
                 expr 
-               ')' { _exprContent += _input.LT(-1).getText(); }
-			;	
+               ')' { _exprContent += _input.LT(-1).getText();
+                     _expr.closeParentheses(); }
+			;			
 			
-comentarios : START_COMMENT
-                       (ID {
-                           _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
-                           } 
-                        | TEXTO )+
-                       {
-	     	               CommandComentario cmd = new CommandComentario(_textComment);
-	     	               stack.peek().add(cmd);
-			            }
-              END_COMMENT
-			;
-	
-START_COMMENT : '/*'
-			;
-						
-END_COMMENT : '*/'
-			;		
-	
+			
+			
+condicao : { _booleanExpr = "";
+             _expr = new BooleanExpressionBuilder();
+            }
+           exprbooleana 
+           
+           { 
+             //_condition =_booleanExpr;
+             _condition = _expr.getExpression();
+             _booleanExpr = ""; 
+           }
+         ;
+			
+exprbooleana  :                   
+                 booleano         
+                 (BOOLEANOBINARIO { 
+                                   bool = _input.LT(-1).getText();
+                                   if (bool.contentEquals("ou")){
+                   		           		_booleanExpr +=  " || ";
+                   		           		bool = "||";
+                                   } else if (bool.contentEquals("e")) {
+                   		           		_booleanExpr +=  " && ";
+                   		           		bool = "&&";
+                                   } else {
+                                      throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                                   } 
+                                   _expr.addOperator(bool);
+                                   }
+                                   
+                 booleano         
+                 )* 
+              ;   
+          
+booleano :                  { _partialBooleanExpr = ""; }
+            (BOOLEANOUNARIO { 
+                             bool = _input.LT(-1).getText();
+                             if (bool.contentEquals("nao")){
+                   		      	_booleanExpr +=  "!";
+                   		      	bool = "!";
+                   			 } else {
+                                throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                             }
+                             _expr.addOperator(bool);
+                            }
+                            
+            )?  
+            '('             { 
+                             _booleanExpr += _input.LT(-1).getText();
+                             _expr.openParentheses();
+                            }
+            exprbooleana    
+            ')'             { _booleanExpr +=  _input.LT(-1).getText();
+                              _exprContent = "";
+                              _partialBooleanExpr = ""; 
+                              _expr.closeParentheses();
+                            }
+            |             { _term = null;}
+            relacao       {   
+                              //_booleanTerm = new IsiTerm(_term.getContent(), IsiTypes.BOOLEAN);
+                              //_booleanExpr +=  _term.getContent();
+                              op = null;
+                              _exprContent = "";
+                            }
+                            
+           |
+           BOOL   {
+                   bool = _input.LT(-1).getText();
+                   if (bool.contentEquals("verdadeiro")){
+                   		_booleanExpr +=  "true";
+                   		bool = "true";
+                   } else if (bool.contentEquals("falso")) {
+                   		_booleanExpr +=  "false";
+                   		bool = "false";
+                   } else {
+                       throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+                   }
+                   _expr.addElement(bool, IsiTypes.BOOLEAN);
+                  }  
+          
+          | expr
+                  
+              
+         ; 
+         
+relacao :  expr  
+           OPREL         { _exprContent += " "+ _input.LT(-1).getText()+" ";
+                           op = _input.LT(-1).getText();
+                           if (op != null && !IsiOperator.isRelationalOperator(op)){
+                                throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
+                           }
+                           _expr.addOperator(op);
+                         }
+           expr
+        ;
+        
+operacao : '('            { _booleanExpr +=  _input.LT(-1).getText();
+                            _expr.openParentheses();}
+            termonumerico
+            OP            { _exprContent += _input.LT(-1).getText();
+                           op = _input.LT(-1).getText();
+                           if (op != null && !IsiOperator.isNumericOperator(op)){
+                                throw new IsiSemanticException("Expecting a numeric operator, but got '"+op+"'");
+                           }
+                           _expr.addOperator(op);
+                         }
+            termonumerico
+            ')'           { _booleanExpr +=  _input.LT(-1).getText();
+                            _expr.closeParentheses();}
+         ;
+        
+termonumerico :  (ID { _attribTerm = _input.LT(-1).getText();
+                       verificaID(_attribTerm);
+	                   _exprContent += _attribTerm;
+	                   useVariavel(_attribTerm);
+	                   /* Verifica se uma variável usada foi atribui­da */
+	                   verificaAtribuicao(_attribTerm);
+	               
+	                   /* Verificacao de tipo*/
+	                   _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
+	                   
+	                   _expr.addElement(_attribTerm, obtemTipoId(_attribTerm) );
+	               
+                      }
+                 
+                 | NUMBER { _attribTerm = _input.LT(-1).getText();
+              	            _exprContent += _attribTerm;
+              	       
+              	           /* VerificaÃ§Ã£o de tipo*/
+	               	       _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               	       
+	               	       _expr.addElement(_attribTerm, IsiTypes.NUMBER);
+                          }
+           
+                 | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
+              	                  _exprContent += _attribTerm;
+              	                   /* Verificacao de tipo*/
+	               		          _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
+	               		          
+	               		          _expr.addElement(_attribTerm, IsiTypes.NUMBER);
+                                }
+           
+                 )
+              ;
+
+			
+BOOLEANOUNARIO : 'nao'
+               ;
+              
+BOOLEANOBINARIO : 'ou' | 'e'
+               ;
+               
+BOOL  : 'verdadeiro' | 'falso'
+      ;
+
 AP	: '('
 	;
 	
@@ -632,9 +749,22 @@ SIGNEDNUMBER : ('+' | '-') [0-9]+ ('.' [0-9]+)?
 SIGN  : ('+' | '-')
       ;
 		
-TEXTO : ('"' | 'â€œ') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( 'â€�' | '"')
+TEXTO : ('"' | '“') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( '”' | '"')
       ;
       
+COMENTARIO : '/*' .*? '*/'
+		   ;
+      
+comentarios : (COMENTARIO {
+                              _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+                          } 
+               )+
+               {
+	     	      CommandComentario cmd = new CommandComentario(_textComment);
+	     	      stack.peek().add(cmd);
+			   }
+			;
+	
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
 

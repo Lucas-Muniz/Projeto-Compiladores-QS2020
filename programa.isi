@@ -1,10 +1,8 @@
 programa
   declare numero a,b,c,d, f.
   declare texto t.
+  declare booleano bol.
   
-  
-   
-     
   escreva("Programa Teste").
   escreva ("Digite A").
   leia (a).
@@ -26,9 +24,16 @@ programa
   t := "hello" + " " + ("world"). 
   f := (a + c)/(2 + 5.6).
   f := -10.525 / (+10) .
-  f := 10 -10 + -1.
+  f := 10 + (-10) + -1.
   f := -10.05 - +10 .
   f := a + b.
+  
+  bol := f < 10 ou ( verdadeiro  e falso ) ou nao ( falso ) e f <= 10/2 .
+  bol := a + 1 < b e f <= 10/2.
+  
+  se (bol) entao {
+  	t := "e verdadeiro".
+  }
    
   se (a == b) entao {
     t := "igual".
@@ -39,7 +44,7 @@ programa
   faca {
   	leia (a).
   	escreva (a).
-  } enquanto (a != 0).
+  } enquanto (a != 0 ou (f == 0) e falso).
   
   escreva ("C e igual a ").
   escreva (c).
@@ -49,7 +54,7 @@ programa
   escreva ("D e igual a ").
   escreva (d).
   
-  enquanto (a+1 < 5){
+  enquanto (a + 1 < b e falso){
   	 leia (a).
      escreva(a).
      escreva("TESTE 1").
@@ -59,8 +64,7 @@ programa
   /* comentario de 
   		varias linhas  */
   		
- 
-  para(numero i := 1 + a.  i < a + 15. i := a + 1){
+  para(numero i := 0.2.  i < 5. i := i + 1){
   	escreva(a).
   	escreva(i).
   }
