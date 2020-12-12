@@ -17,6 +17,7 @@ package isilanguage.parser;
 	import isilanguage.ast.CommandEnquanto;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
+	import isilanguage.ast.CommandComentario;
 	import java.util.ArrayList;
 	import java.util.Stack;
 
@@ -157,4 +158,14 @@ public interface IsiLangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTermo(IsiLangParser.TermoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#comentarios}.
+	 * @param ctx the parse tree
+	 */
+	void enterComentarios(IsiLangParser.ComentariosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#comentarios}.
+	 * @param ctx the parse tree
+	 */
+	void exitComentarios(IsiLangParser.ComentariosContext ctx);
 }

@@ -17,6 +17,7 @@ package isilanguage.parser;
 	import isilanguage.ast.CommandEnquanto;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
+	import isilanguage.ast.CommandComentario;
 	import java.util.ArrayList;
 	import java.util.Stack;
 
@@ -187,6 +188,18 @@ public class IsiLangBaseListener implements IsiLangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTermo(IsiLangParser.TermoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComentarios(IsiLangParser.ComentariosContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComentarios(IsiLangParser.ComentariosContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

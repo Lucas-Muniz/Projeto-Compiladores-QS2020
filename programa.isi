@@ -53,8 +53,9 @@ programa
      a := a + 1.
   }
   
-  /* Comentario de 
-  		várias linhas  */
+  /* comentario de 
+  		varias linhas  */
+  		
   para(numero i := 0.2.  i < 5. i := i + 1){
   	escreva(a).
   	escreva(i).

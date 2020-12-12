@@ -14,6 +14,10 @@ programa
     c := (a - b)/(2 + 5.6).
   }
   
+  se (a != b) entao {
+    c := a + b.
+  } 
+  
   
   leia(t).
   t := "hello" + " " + ("world"). 
@@ -49,8 +53,12 @@ programa
      a := a + 1.
   }
   
-  para(numero i := 0;  i< 5; i++){
+  /* comentario de 
+  		varias linhas  */
+  		
+  para(numero i := 0.2.  i < 5. i := i + 1){
   	escreva(a).
+  	escreva(i).
   }
   
 fimprog.

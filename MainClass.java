@@ -53,7 +53,11 @@ public class MainClass{
             System.out.println("TESTE 1");
             a = a+1;
         }
-        for (i=0; i<5; i++) {
+        /* 
+    comentario de varias linhas 
+        */ 
+
+        for (i=0.2; i<5; i=i+1) {
             System.out.println(a);
             System.out.println(i);
         }

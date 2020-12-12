@@ -17,6 +17,7 @@ grammar IsiLang;
 	import isilanguage.ast.CommandEnquanto;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
+	import isilanguage.ast.CommandComentario;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
@@ -40,7 +41,10 @@ grammar IsiLang;
 	private int type;
 	private String _exprID;
 	private String _exprContent;
+	private String _exprAttrib;
 	private String _exprDecision;
+	private String _exprStep;
+	private String _textComment;
 	private int _tipoVariavel;
 	private ArrayList<AbstractCommand> listaTrue;
 	private ArrayList<AbstractCommand> listaFalse;
@@ -132,7 +136,7 @@ grammar IsiLang;
 	}
 	
 	public void generateCode(){
-		program.generateTarget();
+		program.generateTargetPrettyPrinter();
 	}
 }
 
@@ -190,6 +194,7 @@ cmd		:  cmdleitura
  		|  cmdattrib
  		|  cmdselecao  
  		|  cmdrepeticao
+ 		| comentarios
 		;
 		
 cmdleitura	: 'leia' AP
@@ -271,6 +276,8 @@ cmdselecao  :  'se' AP
                     FCH 
                     {
                        listaTrue = stack.pop();	
+                       listaFalse = new ArrayList<AbstractCommand>();
+                   	   CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
                     } 
                    ('senao' 
                    	 ACH
@@ -282,11 +289,15 @@ cmdselecao  :  'se' AP
                    	FCH
                    	{
                    		listaFalse = stack.pop();
-                   		CommandDecisao cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
-                   		stack.peek().add(cmd);
+                   		cmd = new CommandDecisao(_exprDecision, listaTrue, listaFalse);
                    	}
-                   )?
-            ;
+                   )? 
+                   {
+                   		stack.peek().add(cmd);
+                   }
+                   	
+                   
+            ; 
             
 cmdrepeticao : 'enquanto' AP
                    		  ID    {  op = null;
@@ -364,16 +375,16 @@ cmdrepeticao : 'enquanto' AP
                    	   }
                    	   
 				|
-					'para' 	AP
+				'para' 	  AP {_exprAttrib = "";}
+						  (
 							(
-							
-								(tipo ID {_varName = _input.LT(-1).getText();
-			                              _varValue = null;
+							(tipo ID {_varName = _input.LT(-1).getText();
+			                          _varValue = null;
 			                              symbol = new IsiVariable(_varName, _tipo, _varValue);
 			                              
 			                              if (!symbolTable.exists(_varName)){
 			                                symbolTable.add(symbol);	
-			                                _exprDecision = _varName;
+			                                _exprAttrib = _varName;
 			                              }
 			                              else{
 			                  	            throw new IsiSemanticException("Symbol "+_varName+" already declared");
@@ -381,8 +392,15 @@ cmdrepeticao : 'enquanto' AP
 			                              
 			                           
 			                            }
-	                            ATTR  { _exprDecision += _input.LT(-1).getText();}
-								(ID | NUMBER) {_exprContent =_input.LT(-1).getText(); _exprDecision +=_exprContent;  }
+	                            ATTR  { _exprAttrib += _input.LT(-1).getText();}
+								(ID  { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                              }
+									 }
+								
+								| (NUMBER | SIGNEDNUMBER)) {_exprContent =_input.LT(-1).getText(); _exprAttrib +=_exprContent;  }
+								
 								{
                                    	 
 					               	 atribuiVariavel(_varName);
@@ -394,24 +412,78 @@ cmdrepeticao : 'enquanto' AP
 			                            
 								) | 
 								(
-								ID    { _varName = _input.LT(-1).getText();
+							ID   { _varName = _input.LT(-1).getText();
+									if (!symbolTable.exists(_varName)){
+			                             throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                        }
+			                        else{
+			                            _exprAttrib = _varName;
+			                        }
+							     }
+							)
+							ATTR  { _exprAttrib += _input.LT(-1).getText();}
+							(ID  { _varName = _input.LT(-1).getText();
+									if (!symbolTable.exists(_varName)){
+			                            throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                        }
+								 }
+							| NUMBER) {_exprAttrib +=_input.LT(-1).getText();}
+							))?
+							POINT {_exprDecision = "";}
+							(     
+							ID    { _varName = _input.LT(-1).getText();
 										if (!symbolTable.exists(_varName)){
 			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
 			                              }
 			                              else{
-			                  	            _exprDecision = _varName;
+			                  	            _exprDecision += _varName;
 			                              }
-								})
-								ATTR  { _exprDecision += _input.LT(-1).getText();}
-								(ID | NUMBER) {_exprDecision +=_input.LT(-1).getText();}
-							)
-							SC    { _exprDecision += _input.LT(-1).getText() + " ";}
-							ID    { _exprDecision += _input.LT(-1).getText();}
+								   }
 							OPREL { _exprDecision += _input.LT(-1).getText(); }
-							(ID | NUMBER) {_exprDecision +=_input.LT(-1).getText(); }
-							SC    { _exprDecision += _input.LT(-1).getText() + " ";}
-							ID    { _exprDecision += _input.LT(-1).getText();}
-							INC   { _exprDecision += _input.LT(-1).getText();}
+							(ID { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                            }
+								}
+							| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText(); }
+							)?  { _exprStep = "";}
+							POINT   
+							(
+							ID    { _varName = _input.LT(-1).getText();
+										if (!symbolTable.exists(_varName)){
+			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+			                            }
+								  }
+								  { _exprStep += _input.LT(-1).getText();}
+							(	OP_INC_DEC { _exprStep += _input.LT(-1).getText();}
+							
+								| 	( 	OP_INC_DEC_EQ { _exprStep += _input.LT(-1).getText();} 
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
+									 )
+									 
+								|	(	ATTR { _exprStep += _input.LT(-1).getText();}
+										ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 } { _exprStep += _varName;}
+										 OP { _exprStep += _input.LT(-1).getText();}
+										(ID  { _varName = _input.LT(-1).getText();
+											if (!symbolTable.exists(_varName)){
+				                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
+				                              }
+										 }
+									 	| (NUMBER | SIGNEDNUMBER)) {_exprStep +=_input.LT(-1).getText();} 
+									  )
+									 
+							)
+							
+							)?
 							FP
 							ACH
 							{ curThread = new ArrayList<AbstractCommand>(); 
@@ -423,8 +495,8 @@ cmdrepeticao : 'enquanto' AP
 								listaTrue = stack.pop();	
 							}
 							{
-								CommandFor cmd = new CommandFor(_exprDecision, listaTrue);
-								stack.peek().add(cmd);	
+								CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, listaTrue);
+								stack.peek().add(cmd);
 					}	                   	   
                    	   
                    	   
@@ -447,7 +519,7 @@ expr		:  (termo
               	                _exprContent += _attribTerm;
               	                op = "+";
               	       
-              	                /* VerificaÃ§Ã£o de tipo*/
+              	                /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                               }
 	           )*
@@ -457,10 +529,10 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
                    verificaID(_attribTerm);
 	               _exprContent += _attribTerm;
 	               useVariavel(_attribTerm);
-	               /* Verifica se uma variÃ¡vel usada foi atribuÃ­da */
+	               /* Verifica se uma variÃƒÂ¡vel usada foi atribuÃƒÂ­da */
 	               verificaAtribuicao(_attribTerm);
 	               
-	               /* VerificaÃ§Ã£o de tipo*/
+	               /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
 	               
                  } 
@@ -468,7 +540,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               NUMBER { _attribTerm = _input.LT(-1).getText();
               	       _exprContent += _attribTerm;
               	       
-              	       /* VerificaÃ§Ã£o de tipo*/
+              	       /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                       }
             | 
@@ -491,8 +563,25 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
             | '(' {_exprContent += _input.LT(-1).getText(); } 
                 expr 
                ')' { _exprContent += _input.LT(-1).getText(); }
-			;
+			;	
 			
+comentarios : START_COMMENT
+                       (ID {
+                           _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+                           } 
+                        | TEXTO )+
+                       {
+	     	               CommandComentario cmd = new CommandComentario(_textComment);
+	     	               stack.peek().add(cmd);
+			            }
+              END_COMMENT
+			;
+	
+START_COMMENT : '/*'
+			;
+						
+END_COMMENT : '*/'
+			;		
 	
 AP	: '('
 	;
@@ -508,10 +597,13 @@ POINT : '.'
 	
 OP	: '+' | '-' | '*' | '/'
 	;
+
+OP_INC_DEC 	: '++' | '--' 
+			;	
 	
-INC	: '++'
-	;	
-	
+OP_INC_DEC_EQ	: '+=' | '-='	
+				;
+
 ATTR : ':='
 	 ;
 	 
@@ -542,5 +634,7 @@ SIGN  : ('+' | '-')
 		
 TEXTO : ('"' | 'â€œ') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( 'â€�' | '"')
       ;
+      
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
+

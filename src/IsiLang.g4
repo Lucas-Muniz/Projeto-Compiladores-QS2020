@@ -17,6 +17,7 @@ grammar IsiLang;
 	import isilanguage.ast.CommandEnquanto;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
+	import isilanguage.ast.CommandComentario;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
@@ -43,6 +44,7 @@ grammar IsiLang;
 	private String _exprAttrib;
 	private String _exprDecision;
 	private String _exprStep;
+	private String _textComment;
 	private int _tipoVariavel;
 	private ArrayList<AbstractCommand> listaTrue;
 	private ArrayList<AbstractCommand> listaFalse;
@@ -106,7 +108,7 @@ grammar IsiLang;
 	}
 	
 	public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-		 /* Verificação de tipo*/
+		 /* VerificaÃ§Ã£o de tipo*/
 	     if (_term == null){
 	     	return  new IsiTerm(termo, tipo);
 	     } else {
@@ -192,6 +194,7 @@ cmd		:  cmdleitura
  		|  cmdattrib
  		|  cmdselecao  
  		|  cmdrepeticao
+ 		| comentarios
 		;
 		
 cmdleitura	: 'leia' AP
@@ -504,7 +507,7 @@ expr		:  (termo
                | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
               	       
-              	                 /* Verificação de tipo*/
+              	                 /* VerificaÃ§Ã£o de tipo*/
 	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                                }) 
                                
@@ -516,7 +519,7 @@ expr		:  (termo
               	                _exprContent += _attribTerm;
               	                op = "+";
               	       
-              	                /* VerificaÃ§Ã£o de tipo*/
+              	                /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                               }
 	           )*
@@ -526,10 +529,10 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
                    verificaID(_attribTerm);
 	               _exprContent += _attribTerm;
 	               useVariavel(_attribTerm);
-	               /* Verifica se uma variÃ¡vel usada foi atribuÃ­da */
+	               /* Verifica se uma variÃƒÂ¡vel usada foi atribuÃƒÂ­da */
 	               verificaAtribuicao(_attribTerm);
 	               
-	               /* VerificaÃ§Ã£o de tipo*/
+	               /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
 	               
                  } 
@@ -537,7 +540,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               NUMBER { _attribTerm = _input.LT(-1).getText();
               	       _exprContent += _attribTerm;
               	       
-              	       /* VerificaÃ§Ã£o de tipo*/
+              	       /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
 	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                       }
             | 
@@ -546,7 +549,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	             	_attribTerm = _attribTerm.substring(1);
               	             }
               	             _exprContent += _attribTerm;
-              	             /* Verificação de tipo*/
+              	             /* VerificaÃ§Ã£o de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                             }
                
@@ -554,13 +557,31 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               TEXTO { _attribTerm = _input.LT(-1).getText();
               	      _exprContent += _attribTerm;
               	       
-              	      /* Verificação de tipo*/
+              	      /* VerificaÃ§Ã£o de tipo*/
 	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
                     }
             | '(' {_exprContent += _input.LT(-1).getText(); } 
                 expr 
                ')' { _exprContent += _input.LT(-1).getText(); }
-			;			
+			;	
+			
+comentarios : START_COMMENT
+                       (ID {
+                           _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+                           } 
+                        | TEXTO )+
+                       {
+	     	               CommandComentario cmd = new CommandComentario(_textComment);
+	     	               stack.peek().add(cmd);
+			            }
+              END_COMMENT
+			;
+	
+START_COMMENT : '/*'
+			;
+						
+END_COMMENT : '*/'
+			;		
 	
 AP	: '('
 	;
@@ -611,11 +632,9 @@ SIGNEDNUMBER : ('+' | '-') [0-9]+ ('.' [0-9]+)?
 SIGN  : ('+' | '-')
       ;
 		
-TEXTO : ('"' | '“') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( '”' | '"')
+TEXTO : ('"' | 'â€œ') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( 'â€�' | '"')
       ;
       
-COMMENT : '/*' .*? '*/' -> skip
-        ;
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
 
