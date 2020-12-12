@@ -108,7 +108,7 @@ grammar IsiLang;
 	}
 	
 	public IsiTerm atualizaTipoTermo(String termo, IsiTerm _term, int tipo, String op){
-		 /* VerificaÃ§Ã£o de tipo*/
+		 /* Verificação de tipo*/
 	     if (_term == null){
 	     	return  new IsiTerm(termo, tipo);
 	     } else {
@@ -194,7 +194,7 @@ cmd		:  cmdleitura
  		|  cmdattrib
  		|  cmdselecao  
  		|  cmdrepeticao
- 		| comentarios
+ 		|  comentarios
 		;
 		
 cmdleitura	: 'leia' AP
@@ -507,7 +507,7 @@ expr		:  (termo
                | SIGNEDNUMBER { _attribTerm = _input.LT(-1).getText();
               	                _exprContent += _attribTerm;
               	       
-              	                 /* VerificaÃ§Ã£o de tipo*/
+              	                 /* Verificação de tipo*/
 	               	             _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                                }) 
                                
@@ -519,7 +519,7 @@ expr		:  (termo
               	                _exprContent += _attribTerm;
               	                op = "+";
               	       
-              	                /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
+              	                /* VerificaÃ§Ã£o de tipo*/
 	               	            _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                               }
 	           )*
@@ -529,10 +529,10 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
                    verificaID(_attribTerm);
 	               _exprContent += _attribTerm;
 	               useVariavel(_attribTerm);
-	               /* Verifica se uma variÃƒÂ¡vel usada foi atribuÃƒÂ­da */
+	               /* Verifica se uma variÃ¡vel usada foi atribuÃ­da */
 	               verificaAtribuicao(_attribTerm);
 	               
-	               /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
+	               /* VerificaÃ§Ã£o de tipo*/
 	               _term = atualizaTipoTermo(_attribTerm, _term, obtemTipoId(_attribTerm), op);
 	               
                  } 
@@ -540,7 +540,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               NUMBER { _attribTerm = _input.LT(-1).getText();
               	       _exprContent += _attribTerm;
               	       
-              	       /* VerificaÃƒÂ§ÃƒÂ£o de tipo*/
+              	       /* VerificaÃ§Ã£o de tipo*/
 	               	   _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                       }
             | 
@@ -549,7 +549,7 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               	             	_attribTerm = _attribTerm.substring(1);
               	             }
               	             _exprContent += _attribTerm;
-              	             /* VerificaÃ§Ã£o de tipo*/
+              	             /* Verificação de tipo*/
 	               		     _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.NUMBER, op);
                             }
                
@@ -557,31 +557,13 @@ termo		: ID { _attribTerm = _input.LT(-1).getText();
               TEXTO { _attribTerm = _input.LT(-1).getText();
               	      _exprContent += _attribTerm;
               	       
-              	      /* VerificaÃ§Ã£o de tipo*/
+              	      /* Verificação de tipo*/
 	               	  _term = atualizaTipoTermo(_attribTerm, _term, IsiTypes.TEXT, op);
                     }
             | '(' {_exprContent += _input.LT(-1).getText(); } 
                 expr 
                ')' { _exprContent += _input.LT(-1).getText(); }
-			;	
-			
-comentarios : START_COMMENT
-                       (ID {
-                           _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
-                           } 
-                        | TEXTO )+
-                       {
-	     	               CommandComentario cmd = new CommandComentario(_textComment);
-	     	               stack.peek().add(cmd);
-			            }
-              END_COMMENT
-			;
-	
-START_COMMENT : '/*'
-			;
-						
-END_COMMENT : '*/'
-			;		
+			;			
 	
 AP	: '('
 	;
@@ -632,9 +614,22 @@ SIGNEDNUMBER : ('+' | '-') [0-9]+ ('.' [0-9]+)?
 SIGN  : ('+' | '-')
       ;
 		
-TEXTO : ('"' | 'â€œ') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( 'â€�' | '"')
+TEXTO : ('"' | '“') ([a-z] | [A-Z] | [0-9] | ' ' | '\n' )* ( '”' | '"')
       ;
       
+COMENTARIO : '/*' .*? '*/'
+		   ;
+      
+comentarios : (COMENTARIO {
+                              _textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+                          } 
+               )+
+               {
+	     	      CommandComentario cmd = new CommandComentario(_textComment);
+	     	      stack.peek().add(cmd);
+			   }
+			;
+	
 		
 WS	: (' ' | '\t' | '\n' | '\r') -> skip;
 
