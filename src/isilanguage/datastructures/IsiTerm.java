@@ -23,7 +23,7 @@ public class IsiTerm implements IsiTypes{
 		this.content = content;
 	}
 	
-	protected void addToContent(String element) {
+	public void addToContent(String element) {
 		this.content += element;
 	}
 
@@ -31,7 +31,7 @@ public class IsiTerm implements IsiTypes{
 		return type;
 	}
 	
-	protected void setType(int type) {
+	public void setType(int type) {
 		if (type == NUMBER || type == TEXT || type == BOOLEAN) {
 			this.type = type;
 		} else {

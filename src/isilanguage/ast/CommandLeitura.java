@@ -1,6 +1,7 @@
 package isilanguage.ast;
 
 import isilanguage.datastructures.IsiVariable;
+import isilanguage.exceptions.IsiSemanticException;
 
 public class CommandLeitura extends AbstractCommand {
 
@@ -18,7 +19,17 @@ public class CommandLeitura extends AbstractCommand {
 	
 	@Override
 	public String generateJavaCode(int n) {
-		return generateSpace(n) + id +" = _key." + (var.getType()== IsiVariable.NUMBER? "nextDouble();": "nextLine();");
+		String function;
+		if (var.getType() == IsiVariable.NUMBER) {
+			function = "nextDouble();";
+		} else if (var.getType() == IsiVariable.TEXT) {
+			function = "nextLine();";
+		} else if (var.getType() == IsiVariable.BOOLEAN) {
+			function = "nextBoolean();";
+		} else {
+			throw new IsiSemanticException("type not found for reading command.");
+		}
+		return generateSpace(n) + id +" = _key." + function;
 	}
 	
 	@Override

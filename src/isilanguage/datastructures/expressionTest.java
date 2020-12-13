@@ -1,5 +1,10 @@
 package isilanguage.datastructures;
 
+import isilanguage.datastructures.expressions.BooleanExpressionBuilder;
+import isilanguage.datastructures.expressions.NumericExpressionBuilder;
+import isilanguage.datastructures.expressions.RelationalExpressionBuilder;
+import isilanguage.datastructures.expressions.TextualExpressionBuilder;
+
 public class expressionTest {
 	public static void main(String args[]) {
 		NumericExpressionBuilder n = new NumericExpressionBuilder();
@@ -18,6 +23,8 @@ public class expressionTest {
 		n.addOperator("+");
 		n.addElement("-1", 0);
 		n.closeParentheses();
+		System.out.println(n.getExpression());
+		System.out.println(n.getExpression());
 		System.out.println(n.getExpression());
 		
 		n = new NumericExpressionBuilder();

@@ -66,6 +66,34 @@ public class IsiProgram {
 		}
 
 	}
+	
+	public void generateTargetPrettyPrinter(String fileName) {
+		int n = 8;
+		StringBuilder str = new StringBuilder();
+		str.append("import java.util.Scanner;\n\n");
+		str.append("public class "+fileName+"{ \n");
+		str.append("    public static void main(String args[]){\n ");
+		str.append("       Scanner _key = new Scanner(System.in);\n");
+		for (IsiSymbol symbol: varTable.getAll()) {
+			str.append(symbol.generateJavaCode(n)+"\n");
+		}
+		str.append("\n");
+		for (AbstractCommand command: comandos) {
+			str.append(command.generateJavaCode(n)+"\n");
+		}
+		str.append("    }\n");
+		str.append("}");
+		
+		try {
+			FileWriter fr = new FileWriter(new File(fileName+".java"));
+			fr.write(str.toString());
+			fr.close();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
 
 	public IsiSymbolTable getVarTable() {
 		return varTable;

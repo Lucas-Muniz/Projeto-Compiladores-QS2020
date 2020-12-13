@@ -8,6 +8,7 @@ programa
   leia (a).
   escreva ("Digite B").
   leia (b).
+  leia(bol).
   
   declare booleano bool := verdadeiro .
   
@@ -29,6 +30,9 @@ programa
   f := 10 + (-10) + -1.
   f := -10.05 - +10 .
   f := a + b.
+  
+  declare texto frase := "ello world".
+  f := a  - 215.454.
   
   bol := f < 10 ou ( verdadeiro  e falso ) ou nao ( falso ) e f <= 10/2 .
   bol := a + 1 < b e f <= 10/2.
@@ -69,7 +73,7 @@ programa
   para(numero i := 0.2.  i < 2*(5 + f). i := i + 1){
   	escreva(a).
   	escreva(i).
-  	a := 2 + 3.
+  	a := a + 2.
   }
   
 fimprog.

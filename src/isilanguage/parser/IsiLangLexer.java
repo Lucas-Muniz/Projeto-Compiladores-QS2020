@@ -7,11 +7,11 @@ package isilanguage.parser;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
-	import isilanguage.datastructures.AbstractExpression;
-	import isilanguage.datastructures.NumericExpressionBuilder;
-	import isilanguage.datastructures.TextualExpressionBuilder;
-	import isilanguage.datastructures.RelationalExpressionBuilder;
-	import isilanguage.datastructures.BooleanExpressionBuilder;
+	import isilanguage.datastructures.expressions.AbstractExpression;
+	import isilanguage.datastructures.expressions.NumericExpressionBuilder;
+	import isilanguage.datastructures.expressions.TextualExpressionBuilder;
+	import isilanguage.datastructures.expressions.RelationalExpressionBuilder;
+	import isilanguage.datastructures.expressions.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -238,7 +238,7 @@ public class IsiLangLexer extends Lexer {
 		}
 		
 		public void generateCode(){
-			program.generateTargetPrettyPrinter();
+			program.generateTargetPrettyPrinter("GeneratedCode");
 		}
 
 
