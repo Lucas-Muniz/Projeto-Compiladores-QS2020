@@ -49,6 +49,16 @@ public class expressionTest {
 		r.closeParentheses();
 		System.out.println(r.getExpression());
 		
+		r = new RelationalExpressionBuilder();
+		r.addElement("i", 0);
+		r.addOperator("<=");
+		r.addElement("2", 1);
+		//r.addOperator("-");
+		//r.addElement("i", 0);
+		//r.addOperator("/");
+		//r.addElement("p", 0);
+		System.out.println(r.getExpression());
+		
 		BooleanExpressionBuilder b = new BooleanExpressionBuilder();
 		b.addOperator("not");
 		b.openParentheses();

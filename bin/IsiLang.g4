@@ -397,22 +397,19 @@ cmdrepeticao : 'enquanto' AP
 							))?
 							POINT {_exprDecision = "";}
 							(     
-							ID    { _varName = _input.LT(-1).getText();
+							ID    {     _expr = new RelationalExpressionBuilder();
+							            _varName = _input.LT(-1).getText();
 										if (!symbolTable.exists(_varName)){
 			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
 			                              }
 			                              else{
 			                  	            _exprDecision += _varName;
 			                              }
+			                              _expr.addElement(_varName, obtemTipoId(_varName));
 								   }
-							OPREL { _exprDecision += _input.LT(-1).getText(); }
-							(ID { _varName = _input.LT(-1).getText();
-										if (!symbolTable.exists(_varName)){
-			                                throw new IsiSemanticException("Symbol "+_varName+" not declared");
-			                            }
-								}
-							| (NUMBER | SIGNEDNUMBER)) {_exprDecision +=_input.LT(-1).getText(); }
-							)?  { _exprStep = "";}
+							OPREL { _exprDecision += _input.LT(-1).getText();
+							        _expr.addOperator(_input.LT(-1).getText()); }
+							expr )  { _exprStep = ""; _exprDecision = _expr.getExpression();}
 							POINT   
 							(
 							ID    { _varName = _input.LT(-1).getText();
@@ -460,7 +457,7 @@ cmdrepeticao : 'enquanto' AP
 							{
 								listaTrue = stack.pop();	
 							}
-							{
+							{   
 								CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, listaTrue);
 								stack.peek().add(cmd);
 					}	                   	   

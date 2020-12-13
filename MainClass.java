@@ -62,7 +62,7 @@ public class MainClass{
         /* comentario de 
           		varias linhas  */ 
 
-        for (i=0.2; i<5; i=i+1) {
+        for (i=0.2; i < 2 * (5 + f); i=i+1) {
             System.out.println(a);
             System.out.println(i);
         }

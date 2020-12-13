@@ -46,7 +46,7 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 			} else if (IsiOperator.isNumericOperator(elem)) {
 				builder.addOperator(elem);
 			} else {
-				throw new IsiSemanticException("ERROR: elem '"+elem+" is not a numeric type or a numeric operator.");
+				throw new IsiSemanticException("ERROR: elem '"+elem+"' is not a numeric type or a numeric operator.");
 			}
 		} else {
 			throw new IsiSemanticException("ERROR: bad formed expression, '"+elem+"' is a relational operator.");
