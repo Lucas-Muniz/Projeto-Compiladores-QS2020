@@ -220,6 +220,17 @@ public class IsiLangLexer extends Lexer {
 			}
 		}
 		
+		public String obterSimboloBooleano(String bool){
+		    String symbol;
+	        if (bool.contentEquals("verdadeiro")){
+	        	return "true";
+	        } else if (bool.contentEquals("falso")) {
+	        	return "false";
+	        } else {
+	        	throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
+	       }
+		}
+		
 		public void exibeComandos(){
 			for (AbstractCommand c: program.getComandos()){
 				System.out.println(c);

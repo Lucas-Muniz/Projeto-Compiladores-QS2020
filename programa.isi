@@ -9,6 +9,8 @@ programa
   escreva ("Digite B").
   leia (b).
   
+  declare booleano bool := verdadeiro .
+  
   se (a>b) entao {
     c := a + b.
   } senao {

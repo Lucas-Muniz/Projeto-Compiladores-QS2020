@@ -21,6 +21,7 @@ public class IsiProgram {
 		for (IsiSymbol symbol: varTable.getAll()) {
 			str.append(symbol.generateJavaCode()+"\n");
 		}
+		str.append("\n");
 		for (AbstractCommand command: comandos) {
 			str.append(command.generateJavaCode()+"\n");
 		}
@@ -48,6 +49,7 @@ public class IsiProgram {
 		for (IsiSymbol symbol: varTable.getAll()) {
 			str.append(symbol.generateJavaCode(n)+"\n");
 		}
+		str.append("\n");
 		for (AbstractCommand command: comandos) {
 			str.append(command.generateJavaCode(n)+"\n");
 		}
