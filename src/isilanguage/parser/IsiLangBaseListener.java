@@ -23,6 +23,7 @@ package isilanguage.parser;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
 	import isilanguage.ast.CommandComentario;
+	import isilanguage.ast.CommandEscolha;
 	import java.util.ArrayList;
 	import java.util.Stack;
 
@@ -265,6 +266,18 @@ public class IsiLangBaseListener implements IsiLangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTermonumerico(IsiLangParser.TermonumericoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCmdopcao(IsiLangParser.CmdopcaoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCmdopcao(IsiLangParser.CmdopcaoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

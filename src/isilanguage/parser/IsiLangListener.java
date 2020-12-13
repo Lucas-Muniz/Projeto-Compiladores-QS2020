@@ -23,6 +23,7 @@ package isilanguage.parser;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
 	import isilanguage.ast.CommandComentario;
+	import isilanguage.ast.CommandEscolha;
 	import java.util.ArrayList;
 	import java.util.Stack;
 
@@ -223,6 +224,16 @@ public interface IsiLangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTermonumerico(IsiLangParser.TermonumericoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link IsiLangParser#cmdopcao}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmdopcao(IsiLangParser.CmdopcaoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link IsiLangParser#cmdopcao}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmdopcao(IsiLangParser.CmdopcaoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link IsiLangParser#comentarios}.
 	 * @param ctx the parse tree

@@ -75,5 +75,26 @@ public class GeneratedCode{
             System.out.println(i);
             a = a + 2;
         }
+        switch (t) {
+            case "aa" : 
+                System.out.println("aa");
+            break;
+            case "bb" : 
+                System.out.println("teste2");
+                System.out.println("bb");
+            break;
+            case "cc" : 
+                System.out.println("cc");
+            break;
+            default : 
+                System.out.println("acabou");
+        }
+        switch (bool) {
+            case true : 
+                System.out.println("VERDADEIRO");
+            break;
+            default : 
+                System.out.println("acabou");
+        }
     }
 }

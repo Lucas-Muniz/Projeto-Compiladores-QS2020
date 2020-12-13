@@ -76,4 +76,28 @@ programa
   	a := a + 2.
   }
   
+  escolha (t){
+  	 caso "aa": 
+  	 	escreva("aa").	  
+  	 pare.
+  	 caso "bb": 
+  	    escreva("teste2").
+  	 	escreva("bb").	  
+  	 pare.
+  	 caso "cc": 
+  	 	escreva("cc").	  
+  	 pare.
+  	 padrao:
+  	 	escreva("acabou").
+  }
+  
+  escolha (bool){
+  	 caso verdadeiro: 
+  	 	escreva("VERDADEIRO").	  
+  	 pare.
+  	 padrao:
+  	 	escreva("acabou").
+  }
+  
+  
 fimprog.

@@ -7,11 +7,11 @@ grammar IsiLang;
 	import isilanguage.datastructures.IsiTerm;
 	import isilanguage.datastructures.IsiTypes;
 	import isilanguage.datastructures.IsiOperator;
-	import isilanguage.datastructures.AbstractExpression;
-	import isilanguage.datastructures.NumericExpressionBuilder;
-	import isilanguage.datastructures.TextualExpressionBuilder;
-	import isilanguage.datastructures.RelationalExpressionBuilder;
-	import isilanguage.datastructures.BooleanExpressionBuilder;
+	import isilanguage.datastructures.expressions.AbstractExpression;
+	import isilanguage.datastructures.expressions.NumericExpressionBuilder;
+	import isilanguage.datastructures.expressions.TextualExpressionBuilder;
+	import isilanguage.datastructures.expressions.RelationalExpressionBuilder;
+	import isilanguage.datastructures.expressions.BooleanExpressionBuilder;
 	import isilanguage.exceptions.IsiSemanticException;
 	import isilanguage.ast.IsiProgram;
 	import isilanguage.ast.AbstractCommand;
@@ -23,23 +23,27 @@ grammar IsiLang;
 	import isilanguage.ast.CommandFaca;
 	import isilanguage.ast.CommandFor;
 	import isilanguage.ast.CommandComentario;
+	import isilanguage.ast.CommandEscolha;
 	import java.util.ArrayList;
 	import java.util.Stack;
 }
 
 @members {
-	private int _tipo;
+	private int _tipo, _tipoCaso;
 	private String _varName;
 	private String _varValue;
 	private IsiSymbolTable symbolTable = new IsiSymbolTable();
 	private IsiSymbol symbol;
 	private IsiProgram program = new IsiProgram();
-	private ArrayList<AbstractCommand> curThread;
+	private ArrayList<AbstractCommand> curThread, defaultCommandList;
 	private Stack<ArrayList<AbstractCommand>> stack = new Stack<ArrayList<AbstractCommand>>();
+	private ArrayList<String> listaTexto;
+	private ArrayList<ArrayList<AbstractCommand>> listaComandos;
 	private String _readID;
 	private String _writeID;
 	private String _attribID;
 	private String _attribTerm;
+	private String _casos, _casoBase;
 	private IsiTerm _term = null; 
 	private IsiTerm _newTerm = null;
 	private String op, sign;
@@ -155,7 +159,7 @@ grammar IsiLang;
 	}
 	
 	public void generateCode(){
-		program.generateTargetPrettyPrinter();
+		program.generateTargetPrettyPrinter("GeneratedCode");
 	}
 }
 
@@ -275,6 +279,7 @@ cmd
 	| cmdattrib
 	| cmdselecao
 	| cmdrepeticao
+	| cmdopcao
 	| comentarios
 	| declaravar
 ;
@@ -358,7 +363,6 @@ cmdattrib
         CommandAtribuicao cmd = new CommandAtribuicao(_exprID, _exprContent);
         atribuiVariavel(_exprID);
         stack.peek().add(cmd);
-        //verificaTipoAtribuicao(_exprID, _term);
         _term = null;
         op = null;
     }
@@ -560,8 +564,7 @@ cmdrepeticao
 		}
 
 		OPREL
-		{ 
-			//op = _input.LT(-1).getText();;
+		{ ;
 			_exprDecision += _input.LT(-1).getText();
 			_expr.addOperator(_input.LT(-1).getText());
 	    }
@@ -681,8 +684,8 @@ cmdrepeticao
 		cmd
 	)+ FCH
 	{
-		listaTrue = stack.pop();	
-		CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, listaTrue);
+		commands = stack.pop();	
+		CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, commands);
 		stack.peek().add(cmd);
 	}
 
@@ -695,7 +698,6 @@ expr
 		| SIGNEDNUMBER
 		{ 
 			_attribTerm = _input.LT(-1).getText();
-            //_exprContent += _attribTerm;
             _expr.addElement(_attribTerm, IsiTypes.NUMBER);
         }
 
@@ -705,7 +707,6 @@ expr
 			OP
 			{ 
 				op = _input.LT(-1).getText();
-	            //_exprContent += op;
 	            _expr.addOperator(op);
 	        }
 
@@ -714,7 +715,7 @@ expr
 		| SIGNEDNUMBER
 		{ 
 			_attribTerm = _input.LT(-1).getText();
-            //_exprContent += _attribTerm;
+
             op = "+";
             _expr.addElement(_attribTerm, IsiTypes.NUMBER);
         }
@@ -728,7 +729,6 @@ termo
 	{ 
 		_attribTerm = _input.LT(-1).getText();
         verificaID(_attribTerm);
-	    //_exprContent += _attribTerm;
 	    useVariavel(_attribTerm);
 	    /* Verifica se uma variavel usada foi atribuida */
 	    verificaAtribuicao(_attribTerm);
@@ -739,7 +739,6 @@ termo
 	| NUMBER
 	{ 
 		_attribTerm = _input.LT(-1).getText();
-        //_exprContent += _attribTerm;
         _expr.addElement(_attribTerm, IsiTypes.NUMBER);
     }
 
@@ -749,27 +748,23 @@ termo
         if (op != null && op.contentEquals("+") && _attribTerm.substring(0, 1).contentEquals("+")){
         	_attribTerm = _attribTerm.substring(1);
         }
-        //_exprContent += _attribTerm;
 	               		     
 	  _expr.addElement(_attribTerm, IsiTypes.NUMBER);
     }
 
 	| TEXTO
 	{ 
-		_attribTerm = _input.LT(-1).getText();
-        //_exprContent += _attribTerm;         	  
+		_attribTerm = _input.LT(-1).getText();       	  
 	    _expr.addElement(_attribTerm, IsiTypes.TEXT);
     }
 
 	| '('
 	{
-		//_exprContent += _input.LT(-1).getText();
         _expr.openParentheses(); 
      }
 
 	expr ')'
 	{ 
-		//_exprContent += _input.LT(-1).getText();
         _expr.closeParentheses(); 
     }
 
@@ -778,14 +773,12 @@ termo
 condicao
 :
 {
-	//_booleanExpr = "";
     _expr = new BooleanExpressionBuilder();
 }
 
 	exprbooleana
-	{ //_condition =_booleanExpr;
+	{ 
       _condition = _expr.getExpression();
-      //_booleanExpr = ""; 
     }
 
 ;
@@ -798,10 +791,8 @@ exprbooleana
 		{
 			bool = _input.LT(-1).getText();
             if (bool.contentEquals("ou")){
-            	//_booleanExpr +=  " || ";
                 bool = "||";
             } else if (bool.contentEquals("e")) {
-            	//_booleanExpr +=  " && ";
                 bool = "&&";
             } else {
             	throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
@@ -816,7 +807,7 @@ exprbooleana
 booleano
 :
 { 
-		//_partialBooleanExpr = "";
+		
 	}
 
 	(
@@ -824,7 +815,6 @@ booleano
 		{
 			bool = _input.LT(-1).getText();
             if (bool.contentEquals("nao")){
-            	//_booleanExpr +=  "!";
             	bool = "!";
             } else {
             	throw new IsiSemanticException("Boolean symbol '"+bool+"' is not valid.");
@@ -834,15 +824,11 @@ booleano
 
 	)? '('
 	{
-		//_booleanExpr += _input.LT(-1).getText();
         _expr.openParentheses();
     }
 
 	exprbooleana ')'
 	{ 
-		//_booleanExpr +=  _input.LT(-1).getText();
-        //_exprContent = "";
-        //_partialBooleanExpr = ""; 
         _expr.closeParentheses();
     }
 
@@ -869,7 +855,7 @@ relacao
 :
 	expr OPREL
 	{ 
-		//_exprContent += " "+ _input.LT(-1).getText()+" ";
+		
         op = _input.LT(-1).getText();
         if (op != null && !IsiOperator.isRelationalOperator(op)){
          	throw new IsiSemanticException("Expecting a relational operator, but got '"+op+"'");
@@ -888,7 +874,6 @@ operacao
 
 	termonumerico OP
 	{ 
-		//_exprContent += _input.LT(-1).getText();
         op = _input.LT(-1).getText();
         if (op != null && !IsiOperator.isNumericOperator(op)){
       	  	  throw new IsiSemanticException("Expecting a numeric operator, but got '"+op+"'");
@@ -897,7 +882,7 @@ operacao
     }
 
 	termonumerico ')'
-	{ //_booleanExpr +=  _input.LT(-1).getText();
+	{ 
       _expr.closeParentheses();}
 
 ;
@@ -909,9 +894,8 @@ termonumerico
 		{ 
 		  _attribTerm = _input.LT(-1).getText();
           verificaID(_attribTerm);
-	      //_exprContent += _attribTerm;
 	      useVariavel(_attribTerm);
-	      /* Verifica se uma variável usada foi atribui­da */
+	      /* Verifica se uma variavel usada foi atribuida */
 	      verificaAtribuicao(_attribTerm);
 	      _expr.addElement(_attribTerm, obtemTipoId(_attribTerm) );
 	               
@@ -926,13 +910,84 @@ termonumerico
 
 		| SIGNEDNUMBER
 		{ 
-			_attribTerm = _input.LT(-1).getText();
-            //_exprContent += _attribTerm; 		          
+			_attribTerm = _input.LT(-1).getText();		          
 	        _expr.addElement(_attribTerm, IsiTypes.NUMBER);
         }
 
 	)
 ;
+
+cmdopcao : 'escolha' AP
+					 ID { 
+					 		_casoBase = _input.LT(-1).getText();
+					 		verificaID(_casoBase);
+					 		useVariavel(_casoBase);
+					 		/* Verifica se uma variavel usada foi atribuida */
+					 		verificaAtribuicao(_casoBase);
+					 		listaTexto = new ArrayList<String>();
+					 		listaComandos = new ArrayList<ArrayList<AbstractCommand>>();
+					 		defaultCommandList = new ArrayList<AbstractCommand>();
+					 		_tipo = obtemTipoId(_casoBase);
+					 	}
+					 FP
+					 ACH
+					 ('caso'
+					 (TEXTO {
+					 	_tipoCaso = IsiTypes.TEXT;
+					 	_casos = _input.LT(-1).getText();
+					 }
+					 | (NUMBER | SIGNEDNUMBER) {
+					 	_tipoCaso = IsiTypes.NUMBER;
+					 	_casos = _input.LT(-1).getText();
+					 }
+					 | BOOL {
+					 	_tipoCaso = IsiTypes.BOOLEAN;
+					 	_casos = _input.LT(-1).getText();
+					 	_casos = obterSimboloBooleano(_casos);
+					 }
+					 )		{ 
+					 			if (_tipoCaso != _tipo){
+					 				throw new IsiSemanticException("Expecting a case with a "+IsiTerm.typeToString(_tipo)
+					 					+" but got a case with a "+IsiTerm.typeToString(_tipoCaso)+".");
+					 			}
+					          	listaTexto.add(_casos);
+					          	
+					        }
+					 POINTS
+					 { 
+					 	curThread = new ArrayList<AbstractCommand>();
+					 	stack.push(curThread);
+                   	 	//curThread.add(cmd);
+                   	 }
+					 (cmd)+
+			         'pare'
+					 POINT
+					 {
+					 	listaComandos.add(stack.pop());
+					 }
+					 )+
+					 | ('padrao' {
+					 	curThread = new ArrayList<AbstractCommand>();
+					 	stack.push(curThread);
+					 }
+					 POINTS
+					 (cmd)+
+						 {
+						 	defaultCommandList = stack.pop();
+						 }
+					 )?
+					 
+					 {
+	     	      	 	CommandEscolha cmd = new CommandEscolha(_casoBase, listaTexto, listaComandos, defaultCommandList);
+	     	      		stack.peek().add(cmd);
+			   	     }
+					 FCH 
+					 
+					 
+          ;
+          
+POINTS : ':'
+       ;
 
 BOOLEANOUNARIO
 :
@@ -1086,11 +1141,10 @@ comentarios
 :
 	(
 		COMENTARIO
-		{
-			_textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+		{   _textComment = _input.LT(-1).getText();
         }
 
-	)+
+	)
 	{
 		CommandComentario cmd = new CommandComentario(_textComment);
 		stack.peek().add(cmd);
