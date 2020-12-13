@@ -928,6 +928,13 @@ cmdopcao : 'escolha' AP
 					 		listaComandos = new ArrayList<ArrayList<AbstractCommand>>();
 					 		defaultCommandList = new ArrayList<AbstractCommand>();
 					 		_tipo = obtemTipoId(_casoBase);
+					 		if (_tipo == IsiTypes.BOOLEAN){
+					 			throw new IsiSemanticException(" Incompatible type: boolean cannot be used in switch strucuture.");
+					 		} else if (_tipo == IsiTypes.NUMBER){
+					 			throw new IsiSemanticException(" Incompatible type: number cannot be used in switch strucuture.");
+					 		}
+					 		
+					 		
 					 	}
 					 FP
 					 ACH
@@ -935,15 +942,6 @@ cmdopcao : 'escolha' AP
 					 (TEXTO {
 					 	_tipoCaso = IsiTypes.TEXT;
 					 	_casos = _input.LT(-1).getText();
-					 }
-					 | (NUMBER | SIGNEDNUMBER) {
-					 	_tipoCaso = IsiTypes.NUMBER;
-					 	_casos = _input.LT(-1).getText();
-					 }
-					 | BOOL {
-					 	_tipoCaso = IsiTypes.BOOLEAN;
-					 	_casos = _input.LT(-1).getText();
-					 	_casos = obterSimboloBooleano(_casos);
 					 }
 					 )		{ 
 					 			if (_tipoCaso != _tipo){
@@ -957,7 +955,6 @@ cmdopcao : 'escolha' AP
 					 { 
 					 	curThread = new ArrayList<AbstractCommand>();
 					 	stack.push(curThread);
-                   	 	//curThread.add(cmd);
                    	 }
 					 (cmd)+
 			         'pare'
@@ -966,7 +963,7 @@ cmdopcao : 'escolha' AP
 					 	listaComandos.add(stack.pop());
 					 }
 					 )+
-					 | ('padrao' {
+					 ('padrao' {
 					 	curThread = new ArrayList<AbstractCommand>();
 					 	stack.push(curThread);
 					 }
@@ -977,11 +974,11 @@ cmdopcao : 'escolha' AP
 						 }
 					 )?
 					 
+					 FCH 
 					 {
 	     	      	 	CommandEscolha cmd = new CommandEscolha(_casoBase, listaTexto, listaComandos, defaultCommandList);
 	     	      		stack.peek().add(cmd);
 			   	     }
-					 FCH 
 					 
 					 
           ;

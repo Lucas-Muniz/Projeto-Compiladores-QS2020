@@ -46,7 +46,7 @@ public class CommandEscolha extends AbstractCommand {
 		String space2 = generateSpace(n+numSpace);
 		ArrayList<AbstractCommand> commands;
 		str.append(space1+"switch ("+casoBase+") {\n");
-		if (casos.size() == commandslist.size()) {
+		if (commandslist != null && casos != null && casos.size() == commandslist.size()) {
 			for (int i = 0; i < casos.size(); i++) {
 				str.append(space2+"case "+casos.get(i)+" : \n");
 				commands = commandslist.get(i);
@@ -57,7 +57,7 @@ public class CommandEscolha extends AbstractCommand {
 			}
 		}
 		
-		if (defaultCommandList != null) {
+		if (defaultCommandList != null && defaultCommandList.size() > 0) {
 			str.append(space2+"default : \n");
 			for (AbstractCommand cmd: defaultCommandList) {
 				str.append(cmd.generateJavaCode(space2.length()+numSpace)+"\n");

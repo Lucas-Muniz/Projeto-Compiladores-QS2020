@@ -32,6 +32,7 @@ public class GeneratedCode{
         }
         t = _key.nextLine();
         t = "hello" + " " + ("world");
+        t = "Linguagem " + t;
         f = (a + c) / (2 + 5.6);
         f = (-10.525) / ((+10));
         f = 10 + ((-10)) + (-1);
@@ -89,12 +90,11 @@ public class GeneratedCode{
             default : 
                 System.out.println("acabou");
         }
-        switch (bool) {
-            case true : 
-                System.out.println("VERDADEIRO");
+        switch (t) {
+            case "IsiLang" : 
+                t = "Linguagem " + t;
+                System.out.println(t);
             break;
-            default : 
-                System.out.println("acabou");
         }
     }
 }
