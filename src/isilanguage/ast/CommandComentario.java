@@ -27,7 +27,7 @@ public class CommandComentario extends AbstractCommand  {
 		String space = generateSpace(n);
 		StringBuilder str = new StringBuilder();
 		texto = texto.replace("\n", "\n" + space);
-		str.append(space + texto + "\n");
+		str.append(space + texto);
 		return str.toString();
 	}
 }

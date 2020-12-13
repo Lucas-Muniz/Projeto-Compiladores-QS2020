@@ -681,8 +681,8 @@ cmdrepeticao
 		cmd
 	)+ FCH
 	{
-		listaTrue = stack.pop();	
-		CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, listaTrue);
+		commands = stack.pop();	
+		CommandFor cmd = new CommandFor(_exprAttrib, _exprDecision, _exprStep, commands);
 		stack.peek().add(cmd);
 	}
 
@@ -911,7 +911,7 @@ termonumerico
           verificaID(_attribTerm);
 	      //_exprContent += _attribTerm;
 	      useVariavel(_attribTerm);
-	      /* Verifica se uma variável usada foi atribui­da */
+	      /* Verifica se uma variavel usada foi atribuida */
 	      verificaAtribuicao(_attribTerm);
 	      _expr.addElement(_attribTerm, obtemTipoId(_attribTerm) );
 	               
@@ -1086,11 +1086,10 @@ comentarios
 :
 	(
 		COMENTARIO
-		{
-			_textComment = (_textComment == null ? "" : _textComment) + _input.LT(-1).getText() + " ";
+		{   _textComment = _input.LT(-1).getText();
         }
 
-	)+
+	)
 	{
 		CommandComentario cmd = new CommandComentario(_textComment);
 		stack.peek().add(cmd);

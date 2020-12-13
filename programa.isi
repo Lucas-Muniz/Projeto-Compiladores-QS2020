@@ -36,7 +36,7 @@ programa
   se (bol) entao {
   	t := "e verdadeiro".
   }
-   
+  /* Condicao */ 
   se (a == b) entao {
     t := "igual".
   } senao {
@@ -56,7 +56,7 @@ programa
   escreva ("D e igual a ").
   escreva (d).
   
-  enquanto (a + 1 < b e falso){
+  enquanto (a + 1 < b e verdadeiro){
   	 leia (a).
      escreva(a).
      escreva("TESTE 1").
@@ -65,10 +65,11 @@ programa
   
   /* comentario de 
   		varias linhas  */
-  		
+  /**/		
   para(numero i := 0.2.  i < 2*(5 + f). i := i + 1){
   	escreva(a).
   	escreva(i).
+  	a := 2 + 3.
   }
   
 fimprog.
