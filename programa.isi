@@ -14,8 +14,10 @@ programa
   leia(bol).
   
   /* Declaração de uma nova variável com valor atribuído */
-  declare booleano bool := verdadeiro .
+  declare booleano bool := verdadeiro.
+  escreva (bool).
   declare texto frase := "Hello world".
+  escreva (frase).
   
   /* Comando se - senao */
   se (a>b) entao {

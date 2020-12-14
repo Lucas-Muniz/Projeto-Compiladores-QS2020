@@ -25,7 +25,9 @@ public class GeneratedCode{
         bol = _key.nextBoolean();
         /* Declaração de uma nova variável com valor atribuído */
         bool = true ;
+        System.out.println(bool);
         frase = "Hello world";
+        System.out.println(frase);
         /* Comando se - senao */
         if (a > b) {
             c = a + b;
