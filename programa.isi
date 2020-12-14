@@ -39,6 +39,8 @@ programa
   bol := a + 1 < b e f <= 10/2.
   bol := f < 10 ou (verdadeiro e falso) ou nao (falso) e f <= 10/2 .
   
+  
+  
   /* Comando se - senao */
   se (a>b) entao {
     c := a + b.
