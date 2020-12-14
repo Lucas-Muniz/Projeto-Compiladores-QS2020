@@ -22,7 +22,7 @@ Implementado por: Daniel Di Gênova, Gabriel Santos, Lucas Muniz e Luisa Salles.
                    pare.                                      
                    ...                                      
                    padrao: comandos
-                   }`               
+                   }`. Esse comando está disponível somente para variáveis do tipo Texto.           
                                    
   * Estruturas de repetição:
     - Enquanto: `enquanto (condição) { comandos }`
