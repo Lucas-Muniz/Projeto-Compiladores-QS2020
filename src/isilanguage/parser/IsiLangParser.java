@@ -194,7 +194,7 @@ public class IsiLangParser extends Parser {
 			} else {
 				IsiSymbol var = symbolTable.get(id);
 				if (var instanceof IsiVariable && !((IsiVariable) var).wasAttributed()){
-					throw new IsiSemanticException("Symbol "+id+" is used but not declared");
+					throw new IsiSemanticException("Symbol "+id+" is used but not attributed");
 				} 
 				
 			}

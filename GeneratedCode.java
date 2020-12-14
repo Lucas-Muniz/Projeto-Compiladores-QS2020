@@ -28,6 +28,23 @@ public class GeneratedCode{
         System.out.println(bool);
         frase = "Hello world";
         System.out.println(frase);
+        /* Concatenação de Strings */
+        t = "texto";
+        t = ("hello" + " ") + ("world");
+        t = "Linguagem " + t;
+        /* Operações numéricas */
+        c = 15;
+        f = a + b;
+        f = (a + c) / (2 + 5.6);
+        f = c * (b - 2);
+        f = (-10.525) / ((+10));
+        f = 10 + ((-10)) + (-1);
+        f = (-10.05) - (+10);
+        f = a - 215.454 + 13;
+        /* Operações booleanas */
+        bol = true ;
+        bol = a + 1 < b && f <= 10 / 2;
+        bol = f < 10 || (true && false) || !(false) && f <= 10 / 2;
         /* Comando se - senao */
         if (a > b) {
             c = a + b;
@@ -47,19 +64,6 @@ public class GeneratedCode{
             t = "diferente";
         }
 
-        /* Concatenação de Strings */
-        t = "hello" + " " + ("world");
-        t = "Linguagem " + t;
-        /* Operações numéricas */
-        f = (a + c) / (2 + 5.6);
-        f = (-10.525) / ((+10));
-        f = 10 + ((-10)) + (-1);
-        f = (-10.05) - (+10);
-        f = a + b;
-        f = a - 215.454;
-        /* Operações booleanas */
-        bol = f < 10 || (true && false) || !(false) && f <= 10 / 2;
-        bol = a + 1 < b && f <= 10 / 2;
         /* Comando faca ... enquanto */
         do {
             a = _key.nextDouble();

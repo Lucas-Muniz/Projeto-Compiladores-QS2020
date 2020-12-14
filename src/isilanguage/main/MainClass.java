@@ -31,12 +31,14 @@ public class MainClass {
 			try {
 				/* leitura do programa escrito na IsiLanguage */
 				parser.prog();
+			} catch (IsiSemanticException e) {
+				System.out.println(e);
+				System.exit(-1);
 			} catch (Exception e) {
-				System.out.println("Syntax error");
+				System.out.print("Error: ");
 				System.out.println(e);
 				System.exit(-1);
 			}
-			
 			
 			System.out.println("Compilation Successful");
 			
