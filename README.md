@@ -9,7 +9,7 @@ Implementado por: Daniel Di Gênova, Gabriel Santos, Lucas Muniz e Luisa Salles.
   * Booleano (`verdadeiro` e `falso`)
   
 * Comandos presentes:
-  * Declaração de variáveis: `declare var.`
+  * Declaração de variáveis: `declare tipo var.`
   * Atribuição de valores em variáveis: `var := valor.`
   * Leitura do teclado: `leia (var).`
   * Impressão na tela: `escreva ("exemplo").`
