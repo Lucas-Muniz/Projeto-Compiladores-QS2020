@@ -3,15 +3,21 @@ programa
   declare texto t.
   declare booleano bol.
   
+  /* Comandos de leitura 
+               e escrita */
   escreva("Programa Teste").
   escreva ("Digite A").
   leia (a).
   escreva ("Digite B").
   leia (b).
+  escreva ("Digite bol").
   leia(bol).
   
+  /* Declaração de uma nova variável com valor atribuído */
   declare booleano bool := verdadeiro .
+  declare texto frase := "Hello world".
   
+  /* Comando se - senao */
   se (a>b) entao {
     c := a + b.
   } senao {
@@ -20,47 +26,41 @@ programa
   
   se (a != b) entao {
     c := a + b.
-  } 
-  
-  
-  leia(t).
-  t := "hello" + " " + ("world"). 
-  t := "Linguagem " + t.
-  f := (a + c)/(2 + 5.6).
-  f := -10.525 / (+10) .
-  f := 10 + (-10) + -1.
-  f := -10.05 - +10 .
-  f := a + b.
-  
-  declare texto frase := "ello world".
-  f := a  - 215.454.
-  
-  bol := f < 10 ou ( verdadeiro  e falso ) ou nao ( falso ) e f <= 10/2 .
-  bol := a + 1 < b e f <= 10/2.
+  }
   
   se (bol) entao {
   	t := "e verdadeiro".
   }
-  /* Condicao */ 
+  
   se (a == b) entao {
     t := "igual".
   } senao {
     t := "diferente".
   }
   
+  /* Concatenação de Strings */
+  t := "hello" + " " + ("world"). 
+  t := "Linguagem " + t.
+  /* Operações numéricas */
+  f := (a + c)/(2 + 5.6).
+  f := -10.525 / (+10) .
+  f := 10 + (-10) + -1.
+  f := -10.05 - +10 .
+  f := a + b.
+  f := a  - 215.454.
+  
+  /* Operações booleanas */
+  bol := f < 10 ou ( verdadeiro  e falso ) ou nao ( falso ) e f <= 10/2 .
+  bol := a + 1 < b e f <= 10/2.
+  
+  /* Comando faca ... enquanto */
   faca {
   	leia (a).
   	escreva (a).
   } enquanto (a != 0 ou (f == 0) e falso).
   
-  escreva ("C e igual a ").
-  escreva (c).
   
-  d := c * (a + b).
-  
-  escreva ("D e igual a ").
-  escreva (d).
-  
+  /* Comando enquanto */
   enquanto (a + 1 < b e verdadeiro){
   	 leia (a).
      escreva(a).
@@ -68,15 +68,14 @@ programa
      a := a + 1.
   }
   
-  /* comentario de 
-  		varias linhas  */
-  /**/		
+  /* Comando para  */	
   para(numero i := 0.2.  i < 2*(5 + f). i := i + 1){
   	escreva(a).
   	escreva(i).
   	a := a + 2.
   }
   
+  /* Comando escolha */
   escolha (t){
   	 caso "aa": 
   	 	escreva("aa").	  
@@ -95,7 +94,7 @@ programa
   escolha (t){
   	 caso "IsiLang": 
   	    t := "Linguagem " + t.
-  	 	escreva(t).	  
+  	 	escreva(t).
   	 pare.	  
   }
   
