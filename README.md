@@ -15,6 +15,15 @@ Implementado por: Daniel Di Gênova, Gabriel Santos, Lucas Muniz e Luisa Salles.
   * Impressão na tela: `escreva ("exemplo").`
   * Estruturas de decisão:
     - Se - Senão: `se (condição) { comandos } senao { comandos }`
+    - Escolha: `escolha (variável) {  
+                   caso valor1: comandos                                     
+                   pare.                                      
+                   caso valor2: comandos                                      
+                   pare.                                      
+                   ...                                      
+                   padrao: comandos
+                   }`               
+                                   
   * Estruturas de repetição:
     - Enquanto: `enquanto (condição) { comandos }`
     - Faça ... Enquanto : `faca { comandos } enquanto (condição).`
