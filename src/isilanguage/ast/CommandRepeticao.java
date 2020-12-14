@@ -7,13 +7,15 @@ public class CommandRepeticao extends AbstractCommand {
 	private String condition;
 	private ArrayList<AbstractCommand> commands;
 	
+	/* Comando de repetição (while), composto por uma condição e uma lista de comandos */
 	public CommandRepeticao(String condition, ArrayList<AbstractCommand> cmd) {
 		this.condition = condition;
 		this.commands = cmd;
 	}
+	
+	/* Geração do código Java */
 	@Override
 	public String generateJavaCode() {
-		// TODO Auto-generated method stub
 		StringBuilder str = new StringBuilder();
 		str.append("while ("+condition+") {\n");
 		for (AbstractCommand cmd: commands) {
@@ -23,6 +25,7 @@ public class CommandRepeticao extends AbstractCommand {
 		return str.toString();
 	}
 	
+	/* Geração do código Java identado */
 	@Override
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);

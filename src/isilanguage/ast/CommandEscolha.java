@@ -9,12 +9,16 @@ public class CommandEscolha extends AbstractCommand {
 	private ArrayList<ArrayList<AbstractCommand>> commandslist;
 	private ArrayList<AbstractCommand> defaultCommandList;
 	
+	/* Comando escolha (switch) formado por um caso base, uma lista de casos, 
+	 * uma lista de comandos de cada caso e uma lista de comandos padrão */
 	public CommandEscolha(String casoBase, ArrayList<String> casos, ArrayList<ArrayList<AbstractCommand>> cmd, ArrayList<AbstractCommand> defaultCmd) {
 		this.casoBase = casoBase;
 		this.casos = casos;
 		this.commandslist = cmd;
 		this.defaultCommandList = defaultCmd;
 	}
+	
+	/* Geração do código Java */
 	@Override
 	public String generateJavaCode() {
 		StringBuilder str = new StringBuilder();
@@ -39,6 +43,7 @@ public class CommandEscolha extends AbstractCommand {
 		return str.toString();
 	}
 	
+	/* Geração do código Java identado */
 	@Override
 	public String generateJavaCode(int n) {
 		StringBuilder str = new StringBuilder();

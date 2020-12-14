@@ -9,7 +9,6 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 	private RelationalExpressionBuilder builder = new RelationalExpressionBuilder();
 	private String operatorBuilder = null;
 	private int lastChange;
-	//private String buffer = "";
 	private String bufferNot = "";
 	
 	
@@ -17,7 +16,7 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 		super(IsiTypes.BOOLEAN);
 	}
 	
-
+    /* Adição de um operador booleano na expressão booleana */
 	@Override
 	public void addOperator(String op) {
 		if (operator == null) {
@@ -69,6 +68,7 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 		
 	}
 
+	/* adição de um elemento na expressão booleana */
 	@Override
 	public void addElement(String elem, int type) {
 		if (!IsiOperator.isBooleanOperator(elem) && !(elem.contentEquals("not") || elem.contentEquals("!"))) {
@@ -100,7 +100,7 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 		
 	}
 
-	
+	/* Geração da string da expressão recebida/armazenada */
 	@Override
 	public String getExpression() {
 		if (builder.firstComplete && builder.secondComplete) {
@@ -113,7 +113,6 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 			secondComplete = false;
 		}
 
-		checkParentheses();
 		if (operator != null && firstComplete && secondComplete) {
 			if (isComplete() && checkExpressionOperation()) {
 				return firstTerm.getContent()+space+operator+space+secondTerm.getContent();
@@ -129,6 +128,7 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 		}
 	}
 	
+	/* Verificação de valores boolenos */
 	public boolean isBooleanValue(String str) {
 		if (str.contentEquals("true") || str.contentEquals("false")) {
 			return true;
@@ -136,20 +136,24 @@ public class BooleanExpressionBuilder extends AbstractExpression{
 		return false;
 	}
 	
+	/* Addição de um '(' na expressão */
 	public void openParentheses() {
 		if (lastChange == 0) {
 			this.openParenthesesFirst();
 		} else if (lastChange == 1){
+			openedParentheses++;
 			buffer += "(";
 		} else {
 			builder.openParentheses();
 		}
     }
 	
+	/* Adição de um ')' na expressão */
 	public void closeParentheses() {
 		if (lastChange == 0) {
 			this.closeParenthesesFirst();
 		} else if (lastChange == 1){
+			openedParentheses -= 1;
 			buffer += "(";
 		} else {
 			builder.closeParentheses();

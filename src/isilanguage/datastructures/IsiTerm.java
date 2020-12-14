@@ -2,15 +2,13 @@ package isilanguage.datastructures;
 
 import isilanguage.exceptions.IsiSemanticException;
 
+/* Classe que representa um termo ou uma expressão na IsiLanguage */
 public class IsiTerm implements IsiTypes{
 
 	private String content;
 	private int type;
 	
 	public IsiTerm(String content, int type) {
-		/*if (type == -1) {
-			throw new IsiSemanticException("ERROR: type not found: "+type);
-		}*/
 		this.content = content;
 		this.type = type;
 	}

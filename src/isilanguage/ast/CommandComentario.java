@@ -8,6 +8,7 @@ public class CommandComentario extends AbstractCommand  {
 		this.texto = texto;
 	}
 	
+	/* Geração do comentário no código Java identado */
 	@Override
 	public String generateJavaCode() {
 		// TODO Auto-generated method stub
@@ -21,7 +22,8 @@ public class CommandComentario extends AbstractCommand  {
 	public String toString() {
 		return "CommandComentario [comentario = " + texto + "]";
 	}
-
+    
+	/* Geração do comentário identado */
 	@Override
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);

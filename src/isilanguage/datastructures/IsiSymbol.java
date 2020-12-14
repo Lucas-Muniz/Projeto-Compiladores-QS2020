@@ -1,5 +1,6 @@
 package isilanguage.datastructures;
 
+/* Classe abstrata que representa um símbolo na IsiLanguage */
 public abstract class IsiSymbol {
 	
 	protected String name;

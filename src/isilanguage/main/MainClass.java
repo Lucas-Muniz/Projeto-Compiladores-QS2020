@@ -19,21 +19,31 @@ public class MainClass {
 			IsiLangLexer lexer;
 			IsiLangParser parser;
 			
-			// leio o arquivo "input.isi" e isso é entrada para o Analisador Lexico
+			// leitura do arquivo "input.isi" e isso é entrada para o Analisador Lexico
 			lexer = new IsiLangLexer(CharStreams.fromFileName("programa.isi"));
 			
-			// crio um "fluxo de tokens" para passar para o PARSER
+			// criação de um "fluxo de tokens" para passar para o PARSER
 			CommonTokenStream tokenStream = new CommonTokenStream(lexer);
 			
-			// crio meu parser a partir desse tokenStream
+			// criação do parser a partir desse tokenStream
 			parser = new IsiLangParser(tokenStream);
 			
-			parser.prog();
+			try {
+				/* leitura do programa escrito na IsiLanguage */
+				parser.prog();
+			} catch (Exception e) {
+				System.out.println("Syntax error");
+				System.out.println(e);
+				System.exit(-1);
+			}
+			
 			
 			System.out.println("Compilation Successful");
 			
+			/* exibição dos comandos identificados no programa em IsiLanguage */
 			parser.exibeComandos();
 			
+			/* geração do código Java (identado) */
 			parser.generateCode();
 			
 		}

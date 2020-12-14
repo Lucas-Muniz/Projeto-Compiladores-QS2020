@@ -1,15 +1,12 @@
 package isilanguage.datastructures;
 
 public class IsiVariable extends IsiSymbol implements IsiTypes{
-	
-	//public static final int NUMBER=0;
-	//public static final int TEXT  =1;
-	
 	private int type;
 	private String value;
 	private boolean isUsed;
 	private boolean isAttributed;
 	
+	/* Variável da IsiLanguage, formada por um identificador, um tipo e um valor */
 	public IsiVariable(String name, int type, String value) {
 		super(name);
 		this.type = type;
@@ -67,6 +64,7 @@ public class IsiVariable extends IsiSymbol implements IsiTypes{
        return str + " "+super.name+";";
 	}
 	
+	/* Geração do código Java identado */
 	public String generateJavaCode(int n) {
 	       return generateSpace(n) + this.generateJavaCode();
 		}

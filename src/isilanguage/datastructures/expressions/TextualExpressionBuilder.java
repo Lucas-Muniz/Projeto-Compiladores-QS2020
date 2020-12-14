@@ -6,17 +6,15 @@ import isilanguage.datastructures.IsiTypes;
 import isilanguage.exceptions.IsiSemanticException;
 
 public class TextualExpressionBuilder extends AbstractExpression{
-	//private String operatorBuilder = null;
 	/*Legend: 0 -> first part, 1 -> second part, 2 -> operator and 3 -> storaged operator */
 	private int lastChange = 0;
-	//private String buffer = "";
 	private String opBuffer = "";
 
 	public TextualExpressionBuilder() {
 		super(IsiTypes.TEXT);
-		// TODO Auto-generated constructor stub
 	}
 
+	/* Adição do operador textual na expressão */
 	@Override
 	public void addOperator(String op) {
 		if (op != null) {
@@ -37,6 +35,7 @@ public class TextualExpressionBuilder extends AbstractExpression{
 		
 	}
 
+	/* Adição de um elemento na expressão textual */
 	@Override
 	public void addElement(String elem, int type) {
 		if (operatorBuilder == null) {
@@ -77,7 +76,7 @@ public class TextualExpressionBuilder extends AbstractExpression{
 		
 	}
 
-	
+	/* Adiciona '(' na expressão */
 	public void openParentheses() {
 		if (lastChange == 0) {
 			this.openParenthesesFirst();
@@ -90,6 +89,7 @@ public class TextualExpressionBuilder extends AbstractExpression{
 		}
     }
 	
+	/* Adiciona ')' na expressão */
 	public void closeParentheses() {
 		if (lastChange == 0) {
 			this.closeParenthesesFirst();

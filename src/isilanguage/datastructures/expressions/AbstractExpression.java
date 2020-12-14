@@ -5,6 +5,7 @@ import isilanguage.datastructures.IsiTerm;
 import isilanguage.datastructures.IsiTypes;
 import isilanguage.exceptions.IsiSemanticException;
 
+/* Classe abstrata que representa uma expressão na IsiLanguage */
 public abstract class AbstractExpression implements IsiTypes{
 	protected String buffer = "";
 	protected String operatorBuilder = null;
@@ -32,7 +33,7 @@ public abstract class AbstractExpression implements IsiTypes{
 	public abstract void addOperator(String op);
 	public abstract void addElement(String elem, int type);
 	
-	
+	/* Checa se a expressão está completa */
 	public boolean isComplete() {
 		if (operator != null && firstComplete && secondComplete) {
 			return true;
@@ -40,6 +41,7 @@ public abstract class AbstractExpression implements IsiTypes{
 		return false;
 	}
 	
+	/* Checa se as operações da expressão estão corretas */
 	public boolean isCorrect() {
 		if (getExpressionType(firstTerm.getType(), operator, secondTerm.getType()) == expectedExpressionType) {
 			return true;
@@ -47,8 +49,8 @@ public abstract class AbstractExpression implements IsiTypes{
 		return false;
 	}
 	
+	/* Gera a string da expressão recebida/armazenada */
 	public String getExpression() {
-		checkParentheses();
 		if (isComplete()) {
 			if (checkExpressionOperation() && this.operatorBuilder == null) {
 				return firstTerm.getContent()+space+operator+space+this.buffer+secondTerm.getContent();
@@ -84,17 +86,6 @@ public abstract class AbstractExpression implements IsiTypes{
 	public void closeParenthesesSecond() {
 		openedParentheses -= 1;
 		secondTerm.addToContent(")");
-	}
-	
-	public void checkParentheses() {
-		if (openedParentheses != 0) {
-			String msg;
-			if (openedParentheses < 0) {
-				msg = "You need to close "+(-openedParentheses) +" parentheses.";
-			} else {
-				msg = "You need to open "+openedParentheses +" parentheses.";
-			}
-		}
 	}
 	
 	public int getExpectedType() {

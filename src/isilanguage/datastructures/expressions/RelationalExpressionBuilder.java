@@ -12,6 +12,7 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 
 	private NumericExpressionBuilder builder = new NumericExpressionBuilder();
 	
+	/* Adiciona um operador na expressão relacioanal */
 	@Override
 	public void addOperator(String op) {
 		if (operator == null) {
@@ -36,11 +37,10 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 			} else {
 				throw new IsiSemanticException("ERROR: elem '"+op+"' is not a valid for relational expressions.");
 			}
-			//throw new IsiSemanticException("ERROR: elem '"+op+" is not a valid for relational expressions.");
 		}
-		
 	}
 
+	/* Adiciona um elemento na expressão relacional */
 	@Override
 	public void addElement(String elem, int type) {
 		if (!IsiOperator.isRelationalOperator(elem)) {
@@ -57,6 +57,7 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 		
 	}
 	
+	/* Gera a string da expressão recebida/armazenada */
 	@Override
 	public String getExpression() {
 		if (builder.firstComplete && builder.secondComplete) {
@@ -71,7 +72,7 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 		if (t1 == -1 || t2 == -1) {
 			throw new IsiSemanticException("ERROR: bad formed expression.");
 		}
-		checkParentheses();
+
 		if (isComplete() && checkExpressionOperation()) {
 			return firstTerm.getContent()+space+operator+space+secondTerm.getContent();
 		} else {
@@ -79,11 +80,12 @@ public class RelationalExpressionBuilder extends AbstractExpression{
 		}
 	}
 		
-	
+	/* Adiciona '(' na expressão */
 	public void openParentheses() {
 		builder.openParentheses();
     }
 	
+	/* Adiciona ')' na expressão */
 	public void closeParentheses() {
 		builder.closeParentheses();
 	}

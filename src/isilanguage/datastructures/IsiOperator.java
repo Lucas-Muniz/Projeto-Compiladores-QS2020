@@ -2,6 +2,7 @@ package isilanguage.datastructures;
 
 import isilanguage.exceptions.IsiSemanticException;
 
+/* Classe de identificação dos operadores disponíveis na IsiLanguage */
 public class IsiOperator implements IsiTypes {
 	
 	public static boolean isNumericOperator(String op) {
@@ -40,6 +41,7 @@ public class IsiOperator implements IsiTypes {
 		return false;
 	}
 	
+	/* Checa uma expressão com um determinado tipo é compatível com o operador */
 	public static boolean isCorrectOperator(String op, String term, int termType) {
 		if (termType == -1) {
 			throw new IsiSemanticException("ERROR: type not found: "+termType);

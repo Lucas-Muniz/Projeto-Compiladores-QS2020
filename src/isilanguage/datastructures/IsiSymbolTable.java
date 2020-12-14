@@ -6,6 +6,7 @@ import java.util.Set;
 
 import isilanguage.exceptions.IsiSemanticException;
 
+/* Classee que representa uma tabela de símbolos */
 public class IsiSymbolTable {
 	
 	private HashMap<String, IsiSymbol> map;
@@ -35,6 +36,7 @@ public class IsiSymbolTable {
 		return lista;
 	}
 
+	/* Verifica se as variáveis de uma tabela de símbolos foram declaradas, atribuídas e usadas */
 	public void verifyVariables() {
 		for (IsiSymbol symbol: this.getAll()) {
 			if (symbol instanceof IsiVariable) {

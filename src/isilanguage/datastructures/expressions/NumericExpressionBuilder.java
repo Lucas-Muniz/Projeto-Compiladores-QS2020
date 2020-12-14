@@ -6,16 +6,15 @@ import isilanguage.datastructures.IsiTypes;
 import isilanguage.exceptions.IsiSemanticException;
 
 public class NumericExpressionBuilder extends AbstractExpression{
-	//private String operatorBuilder = null;
 	/*Legend: 0 -> first part, 1 -> second part, 2 -> operator and 3 -> storaged operator */
 	private int lastChange = 0;
-	//private String buffer = "";
 	private String opBuffer = "";
 	
 	public NumericExpressionBuilder() {
 		super(IsiTypes.NUMBER);
 	}
 
+	/* Adiciona um operador na expressão numérica */
 	@Override
 	public void addOperator(String op) {
 		if (op != null) {
@@ -36,9 +35,9 @@ public class NumericExpressionBuilder extends AbstractExpression{
 
 	}
 
+	/* Adição de um elemento na expressão numérica */
 	@Override
 	public void addElement(String elem, int type) {
-		//checkElement(elem, type);
 		if (type != IsiTypes.NUMBER) {
 			throw new IsiSemanticException("ERROR: expecting a numeric type, but '"+elem+"' is a "+IsiTerm.typeToString(type)+".");
 		}
@@ -83,19 +82,7 @@ public class NumericExpressionBuilder extends AbstractExpression{
 		
 	}
 	
-	public void checkElement(String elem, int type) {
-		boolean isNumber = isNumeric(elem);
-		boolean isOperator = IsiOperator.isNumericOperator(elem);
-		if (!isNumber) {
-			throw new IsiSemanticException("ERROR: elem '"+elem+"' is not a number.");
-		} else if (!isOperator && !isNumber) {
-			throw new IsiSemanticException("ERROR: elem '"+elem+"' is not a numeric operator.");
-		} else if (type != IsiTypes.NUMBER) {
-			throw new IsiSemanticException("ERROR: expecting a numeric type, but got '"+IsiTerm.typeToString(type)+"'.");
-		}
-
-	}
-	
+	/* Verifica se a string é um número */
 	public static boolean isNumeric(String strNum) {
 	    if (strNum == null) {
 	        return false;
@@ -108,6 +95,7 @@ public class NumericExpressionBuilder extends AbstractExpression{
 	    return true;
 	}
 	
+	/* Verifica se a string é um numero com sinal */
 	public static boolean isSignedNumber(String strNum) {
 	    if (isNumeric(strNum) && (strNum.substring(0, 1).contentEquals("+") || strNum.substring(0, 1).contentEquals("-"))) {
 	    	return true;
@@ -115,26 +103,32 @@ public class NumericExpressionBuilder extends AbstractExpression{
 	    return false;
 	}
 	
+	/* Adição de um '(' na expressão */
 	public void openParentheses() {
 		if (lastChange == 0) {
 			this.openParenthesesFirst();
 		} else if (lastChange == 1){
 			this.openParenthesesSecond();
 		} else if (lastChange == 2) {
+			openedParentheses++;
 			buffer += "(";
 		} else if (lastChange == 3) {
+			openedParentheses++;
 			opBuffer += "(";
 		}
     }
 	
+	/* Adição de um ')' na expressão */
 	public void closeParentheses() {
 		if (lastChange == 0) {
 			this.closeParenthesesFirst();
 		} else if (lastChange == 1){
 			this.closeParenthesesSecond();
 		} else if (lastChange == 2) {
+			openedParentheses -= 1;
 			buffer += ")";
 		} else if (lastChange == 3) {
+			openedParentheses -= 1;
 			opBuffer += "(";
 		}
 	}

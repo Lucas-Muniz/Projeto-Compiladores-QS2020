@@ -7,10 +7,13 @@ public class CommandEnquanto extends AbstractCommand {
 	private String condition;
 	private ArrayList<AbstractCommand> commands;
 	
+	/* Comando enquanto (while) composto por uma condição e uma lista de comandos */
 	public CommandEnquanto(String condition, ArrayList<AbstractCommand> cmd) {
 		this.condition = condition;
 		this.commands = cmd;
 	}
+	
+	/* Geração do código Java */
 	@Override
 	public String generateJavaCode() {
 		StringBuilder str = new StringBuilder();
@@ -22,6 +25,7 @@ public class CommandEnquanto extends AbstractCommand {
 		return str.toString();
 	}
 	
+	/* Geração do código Java identado */
 	@Override
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);

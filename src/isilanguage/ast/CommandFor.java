@@ -9,6 +9,8 @@ public class CommandFor extends AbstractCommand {
 	private String step;
 	private ArrayList<AbstractCommand> commands;	
 	
+	/* Comando para (for), composto por uma atribuição, uma condição, 
+	 * um passo e uma lista de comandos */
 	public CommandFor(String attrib,  String condition, String step,  ArrayList<AbstractCommand> cmd) {
 		this.attrib = attrib.replace(":=", "=");
 		this.condition = condition;
@@ -16,6 +18,7 @@ public class CommandFor extends AbstractCommand {
 		this.commands = cmd;
 	}
 	
+	/* Geração do código Java */
 	@Override
 	public String generateJavaCode() {
 		// TODO Auto-generated method stub
@@ -28,6 +31,7 @@ public class CommandFor extends AbstractCommand {
 		return str.toString();
 	}
 	
+	/* Geração do código Java identado */
 	@Override
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);

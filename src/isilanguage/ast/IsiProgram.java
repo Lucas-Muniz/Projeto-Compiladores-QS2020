@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import isilanguage.datastructures.IsiSymbol;
 import isilanguage.datastructures.IsiSymbolTable;
 
+/* Classe que representa um programa escrito na IsiLanguage */
 public class IsiProgram {
 	private IsiSymbolTable varTable;
 	private ArrayList<AbstractCommand> comandos;
 	private String programName;
 
+	/* Geração do código Java do programa escrito em IsiLanguage (não identado) */
 	public void generateTarget() {
 		StringBuilder str = new StringBuilder();
 		str.append("import java.util.Scanner;\n");
@@ -39,6 +41,8 @@ public class IsiProgram {
 
 	}
 	
+	/* Geração do código Java do programa escrito em IsiLanguage identado, 
+	 * gravado no arquivo MainClass.java */
 	public void generateTargetPrettyPrinter() {
 		int n = 8;
 		StringBuilder str = new StringBuilder();
@@ -67,6 +71,8 @@ public class IsiProgram {
 
 	}
 	
+	/* Geração do código Java do programa escrito em IsiLanguage identado, 
+	 * gravado no arquivo fileName.java */
 	public void generateTargetPrettyPrinter(String fileName) {
 		int n = 8;
 		StringBuilder str = new StringBuilder();

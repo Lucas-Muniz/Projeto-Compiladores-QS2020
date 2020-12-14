@@ -7,13 +7,15 @@ public class CommandFaca extends AbstractCommand {
 	private String condition;
 	private ArrayList<AbstractCommand> commands;
 	
+	/* Comando faça (do..while) formado por uma condição e uma lista de comandos */
 	public CommandFaca(String condition, ArrayList<AbstractCommand> cmd) {
 		this.condition = condition;
 		this.commands = cmd;
 	}
+	
+	/* Geração do código Java */
 	@Override
 	public String generateJavaCode() {
-		// TODO Auto-generated method stub
 		StringBuilder str = new StringBuilder();
 		str.append("do {\n");
 		for (AbstractCommand cmd: commands) {
@@ -24,6 +26,7 @@ public class CommandFaca extends AbstractCommand {
 		return str.toString();
 	}
 	
+	/* Geração do código Java identado */
 	@Override
 	public String generateJavaCode(int n) {
 		String space = generateSpace(n);
